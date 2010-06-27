@@ -3,8 +3,8 @@ use warnings;
 use strict;
 use lib '/usr/lib/perl5';
 # use lib '/usr/lib/perl5/Marv';
-use Marv::ConfigReader::Simple;
-use Marv::Statistics;
+use Getfit::ConfigReader::Simple;
+use Getfit::Statistics;
 # use Marv::PDF;
 
 my $config = ConfigReader::Simple->new("/var/lib/getfit-marv/configrc");
