@@ -1,0 +1,67 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use DBI;
+use Text::CSV;
+use ConfigReader::Simple;
+
+my $config = ConfigReader::Simple->new('/etc/getfit.cfg');
+die "Could not read config! $ConfigReader::Simple::ERROR\n"
+  unless ref $config;
+my $GETFIT_DATABASE = $config->get('GETFIT_DATABASE');
+my $CALORIES_PER_DAY = $config->get('CALORIES_PER_DAY');
+
+my $max_gain_rate  = ( ($CALORIES_PER_DAY/3500) / 24 / 60 / 60 );              #lbs per second
+my $max_loss_rate  = ( ($CALORIES_PER_DAY/3500) / 24 / 60 / 60 );              #lbs per second
+
+my $dbh =
+  DBI->connect( "dbi:SQLite:$GETFIT_DATABASE", "", "",
+    { RaiseError => 1, AutoCommit => 1 } );
+
+
+&run_will_filter($dbh);
+
+sub print_weight_table {
+    my $dbh = shift;
+    my $weight_readings =
+      $dbh->selectall_arrayref("SELECT * FROM weight_readings ORDER BY id");
+    foreach my $row (@$weight_readings) {
+        my ( $id, $epoch, $weight_reading ) = @$row;
+        print "\t$id\t$epoch\t$weight_reading\n";
+    }
+}
+
+sub run_will_filter {
+    my $dbh                = shift;
+    my $old_time           = 0;
+    my $time_diff          = 0;
+    my $epoch              = 1262731713;
+    my $weight_reading     = 177.8;
+    my $old_weight_reading = $weight_reading;
+    my $filter_weight      = $weight_reading;
+    my $min_weight         = $weight_reading;
+    my $max_weight         = $weight_reading;
+
+    my $weight_readings =
+      $dbh->selectall_arrayref("SELECT * FROM weight_readings ORDER BY id");
+    foreach my $row (@$weight_readings) {
+        $old_time           = $epoch;
+        $old_weight_reading = $filter_weight;
+        ( my $id, $epoch, my $weight_reading ) = @$row;
+        $time_diff  = ( $epoch - $old_time );
+        $max_weight = $old_weight_reading + $max_gain_rate * $time_diff;
+        $min_weight = $old_weight_reading - $max_loss_rate * $time_diff;
+        if ( $weight_reading > $max_weight ) {
+            $filter_weight = $max_weight;
+        }
+        elsif ( $weight_reading < $min_weight ) {
+            $filter_weight = $min_weight;
+        }
+        else {
+            $filter_weight = $weight_reading;
+        }
+
+        #	print "Epoch: $epoch\nOld time: $old_time\nDiff: $time_diff\n----\n";
+	printf ("Fw: %.2f %.2f\n", $filter_weight, $weight_reading);
+    }
+}
