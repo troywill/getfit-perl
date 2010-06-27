@@ -57,7 +57,7 @@ my $priv_func = sub {
 ## YOUR CODE GOES HERE
 
 use lib '/usr/lib/perl5';
-use Marv::ConfigReader::Simple;
+use Getfit::ConfigReader::Simple;
 
 my $config = ConfigReader::Simple->new('/var/lib/getfit-marv/configrc');
 my $initial_time = $config->get('START_TIME');
