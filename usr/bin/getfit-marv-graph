@@ -4,8 +4,8 @@ use strict;
 use PDF::API3::Compat::API2;
 use PDF::API3::Compat::API2::Util;
 use lib '/usr/lib/perl5';
-use Marv::ConfigReader::Simple;
-use Marv::Statistics;
+use Getfit::ConfigReader::Simple;
+use Getfit::Statistics;
 
 my $XMAX = 792;
 my $YMAX = 612;
