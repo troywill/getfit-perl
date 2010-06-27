@@ -1,0 +1,24 @@
+#!/usr/bin/env perl
+use warnings;
+use strict;
+use lib '/usr/lib/perl5';
+use Marv::ConfigReader::Simple;
+use Marv::Statistics;
+
+my $config = ConfigReader::Simple->new('/var/lib/getfit-marv/configrc');
+my $initial_time = $config->get('START_TIME');
+my $initial_weight = $config->get('START_WEIGHT');
+my $loss_rate = $config->get('INITIAL_LOSS_RATE');
+
+&elapsed_time;
+
+print "=> $Marv::Statistics::Current_goal\n";
+
+sub get_weight_goal {
+    my ( $initial_time, $initial_weight, $lbs_per_second ) = @_;
+    my $elapsed_time = time - $initial_time;
+    my $loss = $elapsed_time * $lbs_per_second;
+    my $weight_goal = $initial_weight - $loss;
+    $weight_goal = sprintf("%.2f",$weight_goal);
+    return $weight_goal;
+}
