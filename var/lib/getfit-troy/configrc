@@ -1,0 +1,11 @@
+# date +%s --date="June 23 9:43 AM"
+START_TIME=1277311380
+START_WEIGHT=295.0
+# Calories per day
+INITIAL_LOSS_RATE=945
+PAPER_SIZE=letter
+ORIENTATION=landscape
+SCALE_DATA_FILE=/var/lib/getfit-marv/scale.dat
+# Graph values
+GRAPH_MAX_WEIGHT=300
+GRAPH_MIN_WEIGHT=290
