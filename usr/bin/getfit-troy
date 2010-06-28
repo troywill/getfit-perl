@@ -15,12 +15,14 @@ if ( -e $CONFIG_FILE ) {
 } else {
     die "Configuration file $config doesn't exist: $!";
 }
-my $scale_data_file = $config->get('SCALE_DATA_FILE');
+my $SCALE_DATA_FILE = $config->get('SCALE_DATA_FILE');
 my $initial_weight = $config->get('START_WEIGHT');
 my $initial_time = $config->get('START_TIME');
 my $loss_rate = $config->get('INITIAL_LOSS_RATE');
 
 #### End Read configuration values
+
+&print_weight_readings;
 
 my $lbs_per_second = $loss_rate / 3500 / 24 / 60 / 60;
 my $weight_goal = &get_weight_goal($initial_time, $initial_weight, $lbs_per_second);
@@ -38,7 +40,7 @@ sub get_weight_goal {
 }
 
 sub print_weight_readings {
-    
+    print `cat $SCALE_DATA_FILE`;
 }
 
 sub print_loss_rates {
