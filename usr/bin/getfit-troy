@@ -15,7 +15,7 @@ if ( -e $CONFIG_FILE ) {
 } else {
     die "Configuration file $config doesn't exist: $!";
 }
-
+my $scale_data_file = $config->get('SCALE_DATA_FILE');
 my $initial_weight = $config->get('START_WEIGHT');
 my $initial_time = $config->get('START_TIME');
 my $loss_rate = $config->get('INITIAL_LOSS_RATE');
