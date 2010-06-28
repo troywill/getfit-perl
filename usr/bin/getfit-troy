@@ -20,9 +20,11 @@ my $initial_weight = $config->get('START_WEIGHT');
 my $initial_time = $config->get('START_TIME');
 my $loss_rate = $config->get('INITIAL_LOSS_RATE');
 
-# my $loss_rate = 35; # goal weight loss rate in cals/day, 3 lb per week
+#### End Read configuration values
+
 my $lbs_per_second = $loss_rate / 3500 / 24 / 60 / 60;
 my $weight_goal = &get_weight_goal($initial_time, $initial_weight, $lbs_per_second);
+
 
 printf( "Initial weight: %.2f\n", $initial_weight);
 print "Weight goal: $weight_goal\n";
