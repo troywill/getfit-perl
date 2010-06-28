@@ -11,3 +11,5 @@ LOSS_RATE_FILE=/var/lib/getfit-troy/loss_rate.dat
 # Graph values
 GRAPH_MAX_WEIGHT=190
 GRAPH_MIN_WEIGHT=180
+GETFIT_DATASE=/var/lib/getfit-troy/troy.db
+
