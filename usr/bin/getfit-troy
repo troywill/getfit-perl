@@ -9,7 +9,8 @@ my $CONFIG_FILE = '/var/lib/getfit-troy/configrc';
 
 my $config;
 if ( -e $CONFIG_FILE ) {
-    my $config = ConfigReader::Simple->new('/var/lib/getfit-troy/configrc');    
+    my $config = ConfigReader::Simple->new('/var/lib/getfit-troy/configrc');
+    print "DEBUG: Read config file\n";
 } else {
     die "Configuration file $config doesn't exist: $!";
 }
