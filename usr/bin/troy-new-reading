@@ -5,7 +5,7 @@ use DBI;
 use Text::CSV;
 use ConfigReader::Simple;
 
-my $config = ConfigReader::Simple->new('/etc/getfit.cfg');
+my $config = ConfigReader::Simple->new('/var/lib/getfit-troy/configrc');
 die "Could not read config! $ConfigReader::Simple::ERROR\n"
   unless ref $config;
 

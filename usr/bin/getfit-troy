@@ -47,5 +47,7 @@ sub print_weight_readings {
 }
 
 sub loss_rate {
+    print "------------ sub loss_rate ----------------\n";
     print `cat $LOSS_RATE_FILE`;
+    print "------------ END  ----------------\n";
 }
