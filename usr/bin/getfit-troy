@@ -23,6 +23,7 @@ my $loss_rate = $config->get('INITIAL_LOSS_RATE');
 #### End Read configuration values
 
 &print_weight_readings;
+&loss_rate;
 
 my $lbs_per_second = $loss_rate / 3500 / 24 / 60 / 60;
 my $weight_goal = &get_weight_goal($initial_time, $initial_weight, $lbs_per_second);
@@ -43,6 +44,6 @@ sub print_weight_readings {
     print `cat $SCALE_DATA_FILE`;
 }
 
-sub print_loss_rates {
-    
+sub loss_rate {
+    print `cat LOSS_RATE_FILE`;
 }
