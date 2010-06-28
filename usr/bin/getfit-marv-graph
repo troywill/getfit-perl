@@ -103,6 +103,8 @@ sub draw_weight_line {
     $gfx->line($x2,$y2);
     my ( $x, $y ) = &calculate_plot_point ( 299.8, 1277482286 );
     $gfx->line($x,$y);
+    ( $x, $y ) = &calculate_plot_point ( 298.8, 1277750270 );
+    $gfx->line($x,$y);
     $gfx->stroke;
 }
 
