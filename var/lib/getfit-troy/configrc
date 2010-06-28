@@ -12,4 +12,5 @@ LOSS_RATE_FILE=/var/lib/getfit-troy/loss_rate.dat
 GRAPH_MAX_WEIGHT=190
 GRAPH_MIN_WEIGHT=180
 GETFIT_DATABASE=/var/lib/getfit-troy/troy.db
+CALORIES_PER_DAY=35
 
