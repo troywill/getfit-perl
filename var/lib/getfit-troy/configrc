@@ -1,5 +1,6 @@
 # date +%s --date="December 1, 2009 5:33 PM"
-START_TIME=1259717580; # December 1, 2009 5:33 PM
+# December 1, 2009 5:33 PM
+START_TIME=1259717580;
 START_WEIGHT=183.6
 # Calories per day
 INITIAL_LOSS_RATE=945
