@@ -4,7 +4,15 @@ use strict;
 use lib '/usr/lib/perl5';
 use Getfit::ConfigReader::Simple;
 use Getfit::Statistics;
-my $config = ConfigReader::Simple->new('/var/lib/getfit-troy/configrc');
+
+my $CONFIG_FILE = '/var/lib/getfit-troy/configrc';
+
+my $config;
+if ( -e $CONFIG_FILE ) {
+    my $config = ConfigReader::Simple->new('/var/lib/getfit-troy/configrc');    
+} else {
+    die "Configuration file $config doesn't exist: $!";
+}
 
 my $initial_time = 1259717580; # December 1, 2009 5:33 PM
 $initial_time = 1274317302;
