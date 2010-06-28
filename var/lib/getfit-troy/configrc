@@ -7,6 +7,7 @@ INITIAL_LOSS_RATE=7000
 PAPER_SIZE=letter
 ORIENTATION=landscape
 SCALE_DATA_FILE=/var/lib/getfit-troy/scale.dat
+LOSS_RATE_FILE=/var/lib/getfit-troy/loss_rate.dat
 # Graph values
 GRAPH_MAX_WEIGHT=190
 GRAPH_MIN_WEIGHT=180
