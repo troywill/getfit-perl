@@ -9,23 +9,19 @@ my $CONFIG_FILE = '/var/lib/getfit-troy/configrc';
 
 my $config;
 if ( -e $CONFIG_FILE ) {
-    my $config = ConfigReader::Simple->new('/var/lib/getfit-troy/configrc');
+    $config = ConfigReader::Simple->new('/var/lib/getfit-troy/configrc');
     print "DEBUG: Read config file\n";
 } else {
     die "Configuration file $config doesn't exist: $!";
 }
 
-my $initial_time = $config->get('START_TIME');
 my $initial_weight = $config->get('START_WEIGHT');
+my $initial_time = $config->get('START_TIME');
 my $loss_rate = $config->get('INITIAL_LOSS_RATE');
 
-# my $initial_time = 1259717580; # December 1, 2009 5:33 PM
-# $initial_time = 1274317302;
 # $initial_time = 1275590676; # Thu Jun  3 11:44:45 PDT 2010
 # $initial_time = 1275934219;
 
-# my $initial_weight = 183.6;
-# $initial_weight = 177.4;
 # $initial_weight = 184.4; # Thu Jun  3 11:44:45 PDT 2010
 # $initial_weight = 182.70;
 
