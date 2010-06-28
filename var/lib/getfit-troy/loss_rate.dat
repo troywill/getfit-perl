@@ -1,15 +1,1 @@
-0 945
-1277404964 35
-# date +%s --date="Sun Jun 27 17:43:31 PDT 2010"
-# December 1, 2009 5:33 PM
-START_TIME=1277685811
-START_WEIGHT=183.6
-# Calories per day
-INITIAL_LOSS_RATE=1000
-PAPER_SIZE=letter
-ORIENTATION=landscape
-SCALE_DATA_FILE=/var/lib/getfit-troy/scale.dat
-# Graph values
-GRAPH_MAX_WEIGHT=190
-GRAPH_MIN_WEIGHT=180
-
+0 1000
