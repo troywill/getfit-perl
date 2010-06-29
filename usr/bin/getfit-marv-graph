@@ -26,7 +26,7 @@ my $UPPER_RECT = $YMAX - 20;
 my $LOWER_RECT = 80;
 
 # Circle Constants
-my $RADIUS = 2;
+my $RADIUS = 1;
 
 my $pdf=PDF::API3::Compat::API2->new;
 my $font=$pdf->corefont('Verdana');
