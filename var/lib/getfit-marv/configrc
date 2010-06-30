@@ -9,4 +9,3 @@ SCALE_DATA_FILE=/var/lib/getfit-marv/scale.dat
 # Graph values
 GRAPH_MAX_WEIGHT=300
 GRAPH_MIN_WEIGHT=294
-

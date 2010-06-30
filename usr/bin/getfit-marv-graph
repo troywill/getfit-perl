@@ -14,7 +14,7 @@ my $font_height = 8;
 my $spacer = 2;
 
 ## Graph Constants
-my $MIN_WEIGHT=250;
+my $MIN_WEIGHT=294.6;
 my $MAX_WEIGHT=300;
 my $MIN_TIME = 1277311380;
 my $MAX_TIME = 1277404964;
@@ -26,7 +26,7 @@ my $UPPER_RECT = $YMAX - 20;
 my $LOWER_RECT = 80;
 
 # Circle Constants
-my $RADIUS = 1;
+my $RADIUS = 2;
 
 my $pdf=PDF::API3::Compat::API2->new;
 my $font=$pdf->corefont('Verdana');
@@ -84,6 +84,8 @@ sub plot_weight02 {
     $gfx->circle($x,$y,$RADIUS);
     ( $x, $y ) = &calculate_plot_point ( 298.8, 1277750270 );
     $gfx->circle($x,$y,$RADIUS);
+    ( $x, $y ) = &calculate_plot_point ( 298.6, 1277917798 );
+    $gfx->circle($x,$y,$RADIUS);
 }
 
 sub draw_rectangle {
@@ -105,6 +107,8 @@ sub draw_weight_line {
     $gfx->line($x,$y);
     ( $x, $y ) = &calculate_plot_point ( 298.8, 1277750270 );
     $gfx->line($x,$y);
+    ( $x, $y ) = &calculate_plot_point ( 298.6, 1277917798 );
+    $gfx->line($x,$y);
     $gfx->stroke;
 }
 
@@ -120,7 +124,17 @@ sub draw_goal_line {
     $goal_weight = $goal_weight - ( time - 1277404964 ) * ( 35 / 3500 / 86400 );  
     my ( $x3, $y3 ) = &calculate_plot_point ( $goal_weight, $time );
     $gfx->line($x3,$y3);
-    
+
+    $gfx->stroke;
+}
+sub draw_top_goal_line {
+    my $time = time;
+    my ( $x, $y ) = &calculate_plot_point ( 299.8, 1277482286 );
+    $gfx->move($x1,$y1);
+
+    $goal_weight = 299.8 - ( time - 1277482286 ) * ( 35 / 3500 / 86400 );  
+    my ( $x1, $y1 ) = &calculate_plot_point ( $goal_weight, $time );
+    $gfx->line($x1,$y1);
     $gfx->stroke;
 }
 
