@@ -132,7 +132,7 @@ sub draw_top_goal_line {
     my ( $x, $y ) = &calculate_plot_point ( 299.8, 1277482286 );
     $gfx->move($x,$y);
 
-    $goal_weight = 299.8 - ( time - 1277482286 ) * ( 35 / 3500 / 86400 );  
+    my $goal_weight = 299.8 - ( time - 1277482286 ) * ( 35 / 3500 / 86400 );  
     my ( $x1, $y1 ) = &calculate_plot_point ( $goal_weight, $time );
     $gfx->line($x1,$y1);
     $gfx->stroke;
