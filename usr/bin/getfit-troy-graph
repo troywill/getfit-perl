@@ -83,7 +83,7 @@ sub scale {
 }
 
 sub plot_start_weight {
-    my ( $x, $y ) = &calculate_plot_point ( 295.0, 1277311380 );
+    my ( $x, $y ) = &calculate_plot_point ( $START_WEIGHT, $START_WEIGHT );
     $gfx->circle($x,$y,$RADIUS);
 }
 
