@@ -54,8 +54,9 @@ $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-4*$font_height),$font,$font_height,"Curren
 &draw_rectangle;
 &draw_weight_line;
 &draw_goal_line;
+&draw_top_goal_line;
 
-$pdf->saveas("/srv/http/pdf/marv.pdf");
+$pdf->saveas("/srv/http/pdf/m.pdf");
 $pdf->end();
 
 sub calculate_plot_point {
@@ -116,6 +117,7 @@ sub draw_goal_line {
     my $time = time;
     my ( $x1, $y1 ) = &calculate_plot_point ( 295.0, 1277311380 );
     $gfx->move($x1,$y1);
+    $gfx->linedash(4,2);
 
     my $goal_weight = 295 - ( 1277404964 - 1277311380 ) * ( 945 / 3500 / 86400 );
     my ( $x2, $y2 ) = &calculate_plot_point ( $goal_weight, 1277404964 );
@@ -131,8 +133,8 @@ sub draw_top_goal_line {
     my $time = time;
     my ( $x, $y ) = &calculate_plot_point ( 299.8, 1277482286 );
     $gfx->move($x,$y);
-
-    my $goal_weight = 299.8 - ( time - 1277482286 ) * ( 35 / 3500 / 86400 );  
+    $gfx->linedash(4,2);
+    my $goal_weight = 299.8 - ( time - 1277482286 ) * ( 70 / 3500 / 86400 );  
     my ( $x1, $y1 ) = &calculate_plot_point ( $goal_weight, $time );
     $gfx->line($x1,$y1);
     $gfx->stroke;
