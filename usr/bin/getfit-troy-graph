@@ -120,7 +120,7 @@ sub draw_goal_line {
     $gfx->move($x1,$y1);
     $gfx->linedash(4,2);
 
-    my $goal_weight = 183.4 - ( $time - 1277311380 ) * ( 945 / 3500 / 86400 );
+    my $goal_weight = 183.4 - ( $time - 1277311380 ) * ( 35 / 3500 / 86400 );
     my ( $x2, $y2 ) = &calculate_plot_point ( $goal_weight, $time );
     $gfx->line($x2,$y2);
 
