@@ -7,9 +7,17 @@ use lib '/usr/lib/perl5';
 use Getfit::ConfigReader::Simple;
 use Getfit::Statistics;
 
+#################### Begin Config Section ##################
 my $config = ConfigReader::Simple->new("/var/lib/getfit-troy/configrc");
 my $initial_time = $config->get('START_TIME');
 my $OUTFILE = $config->get('OUTFILE');
+## Graph Constants
+my $MIN_WEIGHT=$config->get('GRAPH_MIN_WEIGHT');
+my $MAX_WEIGHT=$config->get('GRAPH_MAX_WEIGHT');
+my $MIN_TIME = 1277311380;
+my $MAX_TIME = 1277404964;
+
+#################### End Config Section ##################
 
 my $XMAX = 792;
 my $YMAX = 612;
@@ -17,11 +25,6 @@ my $YMAX = 612;
 my $font_height = 8;
 my $spacer = 2;
 
-## Graph Constants
-my $MIN_WEIGHT=294.6;
-my $MAX_WEIGHT=300;
-my $MIN_TIME = 1277311380;
-my $MAX_TIME = 1277404964;
 $MAX_TIME = time;
 
 my $LEFT = 20;
