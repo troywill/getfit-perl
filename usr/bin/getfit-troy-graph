@@ -12,12 +12,13 @@ my $config = ConfigReader::Simple->new("/var/lib/getfit-troy/configrc");
 my $initial_time = $config->get('START_TIME');
 my $OUTFILE = $config->get('OUTFILE');
 ## Graph Constants
+my $SCALE_DATA_FILE=$config->get('SCALE_DATA_FILE');
 my $MIN_WEIGHT=$config->get('GRAPH_MIN_WEIGHT');
 my $MAX_WEIGHT=$config->get('GRAPH_MAX_WEIGHT');
-my $MIN_TIME = 1277311380;
-my $MAX_TIME = 1277404964;
 my $START_TIME=$config->get('START_TIME');
 my $START_WEIGHT=$config->get('START_WEIGHT');
+my $MIN_TIME = $START_TIME;
+my $MAX_TIME = time;
 
 #################### End Config Section ##################
 
@@ -59,7 +60,7 @@ $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-4*$font_height),$font,$font_height,"Curren
 
 # $gfx->stokecolor('lightblue');
 &plot_start_weight;
-&plot_weight02;
+&plot_weights;
 &draw_rectangle;
 &draw_weight_line;
 &draw_goal_line;
@@ -83,12 +84,16 @@ sub scale {
 }
 
 sub plot_start_weight {
-    my ( $x, $y ) = &calculate_plot_point ( $START_WEIGHT, $START_WEIGHT );
+    my ( $x, $y ) = &calculate_plot_point ( $START_WEIGHT, $START_TIME );
     $gfx->circle($x,$y,$RADIUS);
-    $gfx->circle($x,$y,200);
 }
 
-sub plot_weight02 {
+sub plot_weights {
+    open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open data file: $!";
+    print `cat $SCALE_DATA_FILE`;
+    while (my $line=<$OUT>) {
+	print $line;
+    }
     my ( $x, $y ) = &calculate_plot_point ( 297.8, 1277404964 );
     $gfx->circle($x,$y,$RADIUS);
     ( $x, $y ) = &calculate_plot_point ( 299.8, 1277482286 );
