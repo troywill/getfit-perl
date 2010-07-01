@@ -7,6 +7,10 @@ use lib '/usr/lib/perl5';
 use Getfit::ConfigReader::Simple;
 use Getfit::Statistics;
 
+my $config = ConfigReader::Simple->new("/var/lib/getfit-troy/configrc");
+my $initial_time = $config->get('START_TIME');
+my $OUTFILE = $config->get('OUTFILE');
+
 my $XMAX = 792;
 my $YMAX = 612;
 
@@ -56,7 +60,7 @@ $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-4*$font_height),$font,$font_height,"Curren
 &draw_goal_line;
 &draw_top_goal_line;
 
-$pdf->saveas("/srv/http/pdf/m.pdf");
+$pdf->saveas($OUTFILE);
 $pdf->end();
 
 sub calculate_plot_point {
