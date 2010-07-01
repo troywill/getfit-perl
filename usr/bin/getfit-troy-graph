@@ -16,6 +16,8 @@ my $MIN_WEIGHT=$config->get('GRAPH_MIN_WEIGHT');
 my $MAX_WEIGHT=$config->get('GRAPH_MAX_WEIGHT');
 my $MIN_TIME = 1277311380;
 my $MAX_TIME = 1277404964;
+my $START_TIME=$config->get('START_TIME');
+my $START_WEIGHT=$config->get('START_WEIGHT');
 
 #################### End Config Section ##################
 
