@@ -13,4 +13,5 @@ GRAPH_MAX_WEIGHT=190
 GRAPH_MIN_WEIGHT=180
 GETFIT_DATABASE=/var/lib/getfit-troy/troy.db
 CALORIES_PER_DAY=7000
+OUTFILE=/stow/marvredshaw/srv/http/pdf/troy.pdf
 
