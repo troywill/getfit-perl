@@ -14,7 +14,7 @@ my $font_height = 8;
 my $spacer = 2;
 
 ## Graph Constants
-my $MIN_WEIGHT=294.6;
+my $MIN_WEIGHT=290;
 my $MAX_WEIGHT=300;
 my $MIN_TIME = 1277311380;
 my $MAX_TIME = 1277404964;
@@ -85,7 +85,7 @@ sub plot_weight02 {
     $gfx->circle($x,$y,$RADIUS);
     ( $x, $y ) = &calculate_plot_point ( 298.8, 1277750270 );
     $gfx->circle($x,$y,$RADIUS);
-    ( $x, $y ) = &calculate_plot_point ( 298.6, 1277917798 );
+    ( $x, $y ) = &calculate_plot_point ( 292.2, 1278010021 );
     $gfx->circle($x,$y,$RADIUS);
 }
 
@@ -109,6 +109,8 @@ sub draw_weight_line {
     ( $x, $y ) = &calculate_plot_point ( 298.8, 1277750270 );
     $gfx->line($x,$y);
     ( $x, $y ) = &calculate_plot_point ( 298.6, 1277917798 );
+    $gfx->line($x,$y);
+    ( $x, $y ) = &calculate_plot_point ( 292.2, 1278010021 );
     $gfx->line($x,$y);
     $gfx->stroke;
 }
