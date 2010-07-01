@@ -47,11 +47,11 @@ my $gfx=$page->gfx;
 my $TEXT_LEFT = 40;
 my $TEXT_TOP = $LOWER_RECT - 18;
 
-$gfx->textlabel($TEXT_LEFT,$TEXT_TOP,$font,$font_height,"Marv Redshaw");
+$gfx->textlabel($TEXT_LEFT,$TEXT_TOP,$font,$font_height,"Troy Will");
 my $current_goal = sprintf( "%.2f", $Marv::Statistics::Current_goal);
 $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-$font_height),$font,$font_height,  "Current Goal: $current_goal");
 # $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-$font_height),$font,$font_height,  "Beginning Unix Time: ");
-$gfx->textlabel($TEXT_LEFT,($TEXT_TOP-2*$font_height),$font,$font_height,"Beginning Weight: 295");
+$gfx->textlabel($TEXT_LEFT,($TEXT_TOP-2*$font_height),$font,$font_height,"Beginning Weight: 183.6");
 chomp( my $date = `date` );
 my $string = 'Current Unix Time: ' . time . " ($date)";
 $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-3*$font_height),$font,$font_height,$string);
@@ -85,6 +85,7 @@ sub scale {
 sub plot_start_weight {
     my ( $x, $y ) = &calculate_plot_point ( $START_WEIGHT, $START_WEIGHT );
     $gfx->circle($x,$y,$RADIUS);
+    $gfx->circle($x,$y,200);
 }
 
 sub plot_weight02 {
