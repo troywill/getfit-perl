@@ -62,7 +62,6 @@ $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-4*$font_height),$font,$font_height,"Curren
 &plot_start_weight;
 &plot_weights;
 &draw_rectangle;
-&draw_weight_line;
 &draw_goal_line;
 &draw_top_goal_line;
 
@@ -90,13 +89,19 @@ sub plot_start_weight {
 
 sub plot_weights {
     open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open data file: $!";
+    $_ = <$OUT>;
+    my ( $time, $weight ) = split();
+    my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
+    $gfx->circle($x,$y,$RADIUS);
+    $gfx->move($x,$y);
     while (<$OUT>) {
 	my ( $time, $weight ) = split;
 	my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
+	$gfx->line($x,$y);
 	$gfx->circle($x,$y,$RADIUS);
-	$gfx->circle($x,$y,100);
-	print "DEBUG: $x, $y\n";
+	$gfx->move($x,$y);
     }
+    $gfx->stroke;
 }
 
 sub draw_rectangle {
@@ -106,20 +111,6 @@ sub draw_rectangle {
     $gfx->line($RIGHT,$LOWER_RECT);
     $gfx->line($LEFT, $LOWER_RECT);
     $gfx->line($LEFT, $UPPER_RECT);
-    $gfx->stroke;
-}
-
-sub draw_weight_line {
-    my ( $x1, $y1 ) = &calculate_plot_point ( 295.0, 1277311380 );
-    my ( $x2, $y2 ) = &calculate_plot_point ( 297.8, 1277404964 );
-    $gfx->move($x1,$y1);
-    $gfx->line($x2,$y2);
-    my ( $x, $y ) = &calculate_plot_point ( 299.8, 1277482286 );
-    $gfx->line($x,$y);
-    ( $x, $y ) = &calculate_plot_point ( 298.8, 1277750270 );
-    $gfx->line($x,$y);
-    ( $x, $y ) = &calculate_plot_point ( 298.6, 1277917798 );
-    $gfx->line($x,$y);
     $gfx->stroke;
 }
 
@@ -141,13 +132,21 @@ sub draw_goal_line {
 }
 sub draw_top_goal_line {
     my $time = time;
-    my ( $x, $y ) = &calculate_plot_point ( 299.8, 1277482286 );
+    my ( $x, $y ) = &calculate_plot_point ( 189.4, 1277689877 );
     $gfx->move($x,$y);
     $gfx->linedash(4,2);
-    my $goal_weight = 299.8 - ( time - 1277482286 ) * ( 70 / 3500 / 86400 );  
+    my $goal_weight = 189.4 - ( time - 1277689877 ) * ( 70 / 3500 / 86400 );  
     my ( $x1, $y1 ) = &calculate_plot_point ( $goal_weight, $time );
     $gfx->line($x1,$y1);
     $gfx->stroke;
 }
 
 exit;
+__END__
+1277533030 183.4
+1277685811 183.6
+1277689877 189.4
+1277698154 188.8
+1277750046 186.6
+1277776422 186.4
+1277948256 185.6
