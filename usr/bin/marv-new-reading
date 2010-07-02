@@ -12,7 +12,8 @@ die "Could not read config! $ConfigReader::Simple::ERROR\n"
   unless ref $config;
 
 my $GETFIT_DATABASE = $config->get('GETFIT_DATABASE');
-print "DEBUG: $GETFIT_DATABASE\n";
+my $FLAT_FILE = $config->get('SCALE_DATA_FILE');
+
 my $dbh =
   DBI->connect( "dbi:SQLite:$GETFIT_DATABASE", "", "",
     { RaiseError => 1, AutoCommit => 1 } );

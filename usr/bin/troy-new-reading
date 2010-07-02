@@ -57,4 +57,3 @@ sub get_weight_goal {
     $weight_goal = sprintf("%.2f",$weight_goal);
     return $weight_goal;
 }
-
