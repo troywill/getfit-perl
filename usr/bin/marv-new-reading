@@ -4,6 +4,8 @@ use warnings;
 use DBI;
 use Text::CSV;
 use ConfigReader::Simple;
+use lib '/usr/lib/perl5';
+use Getfit::ConfigReader::Simple;
 
 my $config = ConfigReader::Simple->new('/etc/getfit-marv.cfg');
 die "Could not read config! $ConfigReader::Simple::ERROR\n"
@@ -25,6 +27,12 @@ sub new_reading {
     my $time = time;
     
     $dbh->do("INSERT INTO weight_readings VALUES (NULL,$time,$weight)");
+
+    open ( my $out, '>>', $FLAT_FILE ) or die "Unable to open $FLAT_FILE for appending: $!";
+    print $out "$time $weight\n";
+    close $out;
+    system('getfit-marv-graph');
+
 }
 
 sub create_table_weight_readings {
