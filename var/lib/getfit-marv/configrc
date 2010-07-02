@@ -6,6 +6,7 @@ INITIAL_LOSS_RATE=945
 PAPER_SIZE=letter
 ORIENTATION=landscape
 SCALE_DATA_FILE=/var/lib/getfit-marv/scale.dat
+GETFIT_DATABASE=/var/lib/getfit-marv/marv.db
 # Graph values
 GRAPH_MAX_WEIGHT=300
 GRAPH_MIN_WEIGHT=294

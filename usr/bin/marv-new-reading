@@ -7,18 +7,20 @@ use ConfigReader::Simple;
 use lib '/usr/lib/perl5';
 use Getfit::ConfigReader::Simple;
 
-my $config = ConfigReader::Simple->new('/etc/getfit-marv.cfg');
+my $config = ConfigReader::Simple->new('/var/lib/getfit-marv/configrc');
 die "Could not read config! $ConfigReader::Simple::ERROR\n"
   unless ref $config;
 
 my $GETFIT_DATABASE = $config->get('GETFIT_DATABASE');
+print "DEBUG: $GETFIT_DATABASE\n";
+
 my $FLAT_FILE = $config->get('SCALE_DATA_FILE');
 
 my $dbh =
   DBI->connect( "dbi:SQLite:$GETFIT_DATABASE", "", "",
     { RaiseError => 1, AutoCommit => 1 } );
 
-# &create_table_weight_readings($dbh);
+&create_table_weight_readings($dbh);
 &new_reading($dbh);
 
 sub new_reading {
