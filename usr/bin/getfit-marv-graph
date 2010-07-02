@@ -7,6 +7,23 @@ use lib '/usr/lib/perl5';
 use Getfit::ConfigReader::Simple;
 use Getfit::Statistics;
 
+#################### Begin Config Section ##################
+my $config = ConfigReader::Simple->new("/var/lib/getfit-marv/configrc");
+my $initial_time = $config->get('START_TIME');
+my $OUTFILE = $config->get('OUTFILE');
+## Graph Constants
+my $SCALE_DATA_FILE=$config->get('SCALE_DATA_FILE');
+my $MIN_WEIGHT=$config->get('GRAPH_MIN_WEIGHT');
+my $MAX_WEIGHT=$config->get('GRAPH_MAX_WEIGHT');
+my $MAX_TIME = $config->get('GRAPH_MAX_TIME');
+
+my $START_TIME=$config->get('START_TIME');
+my $START_WEIGHT=$config->get('START_WEIGHT');
+my $MIN_TIME = $START_TIME;
+
+
+#################### End Config Section ##################
+
 my $XMAX = 792;
 my $YMAX = 612;
 
@@ -14,11 +31,9 @@ my $font_height = 8;
 my $spacer = 2;
 
 ## Graph Constants
-my $MIN_WEIGHT=290;
-my $MAX_WEIGHT=300;
-my $MIN_TIME = 1277311380;
-my $MAX_TIME = 1277404964;
-$MAX_TIME = time;
+$MAX_WEIGHT=300;
+$MIN_TIME = 1277311380;
+# $MAX_TIME = time;
 
 my $LEFT = 20;
 my $RIGHT = $XMAX - 20;
@@ -49,8 +64,7 @@ $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-3*$font_height),$font,$font_height,$string
 $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-4*$font_height),$font,$font_height,"Current Weight: $current_goal");
 
 # $gfx->stokecolor('lightblue');
-&plot_start_weight;
-&plot_weight02;
+&plot_weights;
 &draw_rectangle;
 &draw_weight_line;
 &draw_goal_line;
@@ -78,17 +92,21 @@ sub plot_start_weight {
     $gfx->circle($x,$y,$RADIUS);
 }
 
-sub plot_weight02 {
-    my ( $x, $y ) = &calculate_plot_point ( 297.8, 1277404964 );
+sub plot_weights {
+    open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open data file: $!";
+    $_ = <$OUT>;
+    my ( $time, $weight ) = split();
+    my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
     $gfx->circle($x,$y,$RADIUS);
-    ( $x, $y ) = &calculate_plot_point ( 299.8, 1277482286 );
-    $gfx->circle($x,$y,$RADIUS);
-    ( $x, $y ) = &calculate_plot_point ( 298.8, 1277750270 );
-    $gfx->circle($x,$y,$RADIUS);
-    ( $x, $y ) = &calculate_plot_point ( 298.6, 1277917798 );
-    $gfx->circle($x,$y,$RADIUS);
-    ( $x, $y ) = &calculate_plot_point ( 292.2, 1278010021 );
-    $gfx->circle($x,$y,$RADIUS);
+    $gfx->move($x,$y);
+    while (<$OUT>) {
+	my ( $time, $weight ) = split;
+	my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
+	$gfx->line($x,$y);
+	$gfx->circle($x,$y,$RADIUS);
+	$gfx->move($x,$y);
+    }
+    $gfx->stroke;
 }
 
 sub draw_rectangle {
