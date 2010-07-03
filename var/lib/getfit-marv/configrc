@@ -1,5 +1,6 @@
 # Marv Redshaw
 # date +%s --date="June 23 9:43 AM"
+OUTFILE=/tmp/marv.pdf
 START_TIME=1277311380
 START_WEIGHT=295.0
 # Calories per day
@@ -8,8 +9,19 @@ PAPER_SIZE=letter
 ORIENTATION=landscape
 SCALE_DATA_FILE=/var/lib/getfit-marv/scale.dat
 GETFIT_DATABASE=/var/lib/getfit-marv/marv.db
-# Graph values
+
+
+########## Graph values ##########
 GRAPH_MAX_WEIGHT=300
 GRAPH_MIN_WEIGHT=250
 # August 1
 GRAPH_MAX_TIME=1280646000
+# Subsection: Goal lines 
+
+CALS_PER_DAY=1000
+GOAL_START_TIME=1277311380
+GOAL_START_WEIGHT=295.0
+
+TOP_GOAL_WEIGHT=299.8
+TOP_GOAL_TIME=1277482286
+TOP_GOAL_CALORIES

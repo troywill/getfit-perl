@@ -1,3 +1,4 @@
+# Troy Will
 # date +%s --date="Sun Jun 27 17:43:31 PDT 2010"
 # December 1, 2009 5:33 PM
 START_TIME=1277533030
@@ -9,12 +10,23 @@ ORIENTATION=landscape
 SCALE_DATA_FILE=/var/lib/getfit-troy/scale.dat
 LOSS_RATE_FILE=/var/lib/getfit-troy/loss_rate.dat
 
-# Graph values
+########## Graph values ###########
 GRAPH_MAX_WEIGHT=190
 GRAPH_MIN_WEIGHT=180
 GETFIT_DATABASE=/var/lib/getfit-troy/troy.db
 CALORIES_PER_DAY=7000
-OUTFILE=/stow/marvredshaw/srv/http/pdf/troy.pdf
 OUTFILE=/tmp/troy.pdf
 MIN_TIME=1277685811
-MAX_TIME=1277948256
+# August 1
+GRAPH_MAX_TIME=1280646000
+# Subsection: Goal lines 
+CALS_PER_DAY=35
+GOAL_START_TIME=1277533030
+GOAL_START_WEIGHT=183.4
+
+TOP_GOAL_WEIGHT=189.4
+TOP_GOAL_TIME=1277689877
+TOP_GOAL_CALORIES=1000
+
+exit;
+__END__

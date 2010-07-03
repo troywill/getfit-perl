@@ -7,8 +7,10 @@ use lib '/usr/lib/perl5';
 use Getfit::ConfigReader::Simple;
 use Getfit::Statistics;
 
+my $config_file = shift or die "/var/lib/getfit-troy/configrc"; # e.g. /var/lib/getfit-troy/configrc
+
 #################### Begin Config Section ##################
-my $config = ConfigReader::Simple->new("/var/lib/getfit-troy/configrc");
+my $config = ConfigReader::Simple->new($config_file);
 my $initial_time = $config->get('START_TIME');
 my $OUTFILE = $config->get('OUTFILE');
 ## Graph Constants
@@ -18,17 +20,13 @@ my $MAX_WEIGHT=$config->get('GRAPH_MAX_WEIGHT');
 my $START_TIME=$config->get('START_TIME');
 my $START_WEIGHT=$config->get('START_WEIGHT');
 my $MIN_TIME = $START_TIME;
-my $MAX_TIME = time;
-
-#################### End Config Section ##################
+my $MAX_TIME = $config->get('GRAPH_MAX_TIME');
 
 my $XMAX = 792;
 my $YMAX = 612;
 
 my $font_height = 8;
 my $spacer = 2;
-
-$MAX_TIME = time;
 
 my $LEFT = 20;
 my $RIGHT = $XMAX - 20;
@@ -38,27 +36,16 @@ my $LOWER_RECT = 80;
 # Circle Constants
 my $RADIUS = 2;
 
+my $TEXT_LEFT = 40;
+my $TEXT_TOP = $LOWER_RECT - 18;
+#################### End Config Section ##################
+
 my $pdf=PDF::API3::Compat::API2->new;
 my $font=$pdf->corefont('Verdana');
 my $page = $pdf->page;
 $page->mediabox(792,612); # Letter Landscape
 my $gfx=$page->gfx;
 
-################# Text ##########
-my $TEXT_LEFT = 40;
-my $TEXT_TOP = $LOWER_RECT - 18;
-
-$gfx->textlabel($TEXT_LEFT,$TEXT_TOP,$font,$font_height,"Troy Will");
-my $current_goal = sprintf( "%.2f", $Marv::Statistics::Current_goal);
-$gfx->textlabel($TEXT_LEFT,($TEXT_TOP-$font_height),$font,$font_height,  "Current Goal: $current_goal");
-# $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-$font_height),$font,$font_height,  "Beginning Unix Time: ");
-$gfx->textlabel($TEXT_LEFT,($TEXT_TOP-2*$font_height),$font,$font_height,"Beginning Weight: 183.6");
-chomp( my $date = `date` );
-my $string = 'Current Unix Time: ' . time . " ($date)";
-$gfx->textlabel($TEXT_LEFT,($TEXT_TOP-3*$font_height),$font,$font_height,$string);
-$gfx->textlabel($TEXT_LEFT,($TEXT_TOP-4*$font_height),$font,$font_height,"Current Weight: $current_goal");
-
-# $gfx->stokecolor('lightblue');
 &plot_start_weight;
 &plot_weights;
 &draw_rectangle;
@@ -67,6 +54,19 @@ $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-4*$font_height),$font,$font_height,"Curren
 
 $pdf->saveas($OUTFILE);
 $pdf->end();
+
+sub draw_legend {
+    ################# Text ##########
+    $gfx->textlabel($TEXT_LEFT,$TEXT_TOP,$font,$font_height,"Troy Will");
+    my $current_goal = sprintf( "%.2f", $Marv::Statistics::Current_goal);
+    $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-$font_height),$font,$font_height,  "Current Goal: $current_goal");
+# $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-$font_height),$font,$font_height,  "Beginning Unix Time: ");
+    $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-2*$font_height),$font,$font_height,"Beginning Weight: 183.6");
+    chomp( my $date = `date` );
+    my $string = 'Current Unix Time: ' . time . " ($date)";
+    $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-3*$font_height),$font,$font_height,$string);
+    $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-4*$font_height),$font,$font_height,"Current Weight: $current_goal");
+}
 
 sub calculate_plot_point {
     my ( $weight, $time ) = @_;
@@ -88,6 +88,7 @@ sub plot_start_weight {
 }
 
 sub plot_weights {
+    $gfx->strokecolor('lightblue');
     open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open data file: $!";
     $_ = <$OUT>;
     my ( $time, $weight ) = split();
@@ -116,12 +117,15 @@ sub draw_rectangle {
 
 sub draw_goal_line {
     my $time = time;
-    my ( $x1, $y1 ) = &calculate_plot_point (  183.4, 1277533030 );
+    my $CALS_PER_DAY=$config->get('CALS_PER_DAY');
+    my $GOAL_START_TIME = $config->get('GOAL_START_TIME');
+    my $GOAL_START_WEIGHT = $config->get('GOAL_START_WEIGHT');
+    my ( $x1, $y1 ) = &calculate_plot_point (  $GOAL_START_WEIGHT, $GOAL_START_TIME );
     $gfx->move($x1,$y1);
-    $gfx->linedash(4,2);
+    $gfx->linedash(2,4);
 
-    my $goal_weight = 183.4 - ( $time - 1277311380 ) * ( 35 / 3500 / 86400 );
-    my ( $x2, $y2 ) = &calculate_plot_point ( $goal_weight, $time );
+    my $goal_weight = $GOAL_START_WEIGHT - ( $MAX_TIME - $GOAL_START_TIME ) * ( $CALS_PER_DAY / 3500 / 86400 );
+    my ( $x2, $y2 ) = &calculate_plot_point ( $goal_weight, $MAX_TIME );
     $gfx->line($x2,$y2);
 
     $gfx->stroke;
@@ -130,19 +134,12 @@ sub draw_top_goal_line {
     my $time = time;
     my ( $x, $y ) = &calculate_plot_point ( 189.4, 1277689877 );
     $gfx->move($x,$y);
-    $gfx->linedash(4,2);
-    my $goal_weight = 189.4 - ( time - 1277689877 ) * ( 1000 / 3500 / 86400 );  
-    my ( $x1, $y1 ) = &calculate_plot_point ( $goal_weight, $time );
+    $gfx->linedash(2,4);
+    my $goal_weight = 189.4 - ( $MAX_TIME - 1277689877 ) * ( 1000 / 3500 / 86400 );  
+    my ( $x1, $y1 ) = &calculate_plot_point ( $goal_weight, $MAX_TIME );
+    $gfx->strokecolor('#FF0000');
     $gfx->line($x1,$y1);
     $gfx->stroke;
 }
 
 exit;
-__END__
-1277533030 183.4
-1277685811 183.6
-1277689877 189.4
-1277698154 188.8
-1277750046 186.6
-1277776422 186.4
-1277948256 185.6
