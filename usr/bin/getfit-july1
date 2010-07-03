@@ -1,0 +1,41 @@
+#!/usr/bin/env perl
+use warnings;
+use strict;
+use PDF::API3::Compat::API2;
+use PDF::API3::Compat::API2::Util;
+use lib '/usr/lib/perl5';
+use Getfit::ConfigReader::Simple;
+use Getfit::Statistics;
+
+my $config_file = shift or die "/var/lib/getfit-troy/configrc"; # e.g. /var/lib/getfit-troy/configrc
+
+#################### Begin Config Section ##################
+my $config = ConfigReader::Simple->new($config_file);
+my $initial_time = $config->get('START_TIME');
+my $OUTFILE = $config->get('OUTFILE');
+## Graph Constants
+my $SCALE_DATA_FILE=$config->get('SCALE_DATA_FILE');
+my $MIN_WEIGHT=$config->get('GRAPH_MIN_WEIGHT');
+my $MAX_WEIGHT=$config->get('GRAPH_MAX_WEIGHT');
+my $START_TIME=$config->get('START_TIME');
+my $START_WEIGHT=$config->get('START_WEIGHT');
+my $MIN_TIME = $START_TIME;
+my $MAX_TIME = $config->get('GRAPH_MAX_TIME');
+
+my $XMAX = 792;
+my $YMAX = 612;
+
+my $font_height = 8;
+my $spacer = 2;
+
+my $LEFT = 20;
+my $RIGHT = $XMAX - 20;
+my $UPPER_RECT = $YMAX - 20;
+my $LOWER_RECT = 80;
+
+# Circle Constants
+my $RADIUS = .5;
+
+my $TEXT_LEFT = 40;
+my $TEXT_TOP = $LOWER_RECT - 18;
+#################### End Config Section ##################
