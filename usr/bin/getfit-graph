@@ -34,7 +34,7 @@ my $UPPER_RECT = $YMAX - 20;
 my $LOWER_RECT = 80;
 
 # Circle Constants
-my $RADIUS = 1;
+my $RADIUS = .5;
 
 my $TEXT_LEFT = 40;
 my $TEXT_TOP = $LOWER_RECT - 18;
@@ -129,6 +129,7 @@ sub draw_goal_line {
 
     $gfx->stroke;
 }
+
 sub draw_top_goal_line {
     my $time = time;
     my ( $x, $y ) = &calculate_plot_point ( 189.4, 1277689877 );
