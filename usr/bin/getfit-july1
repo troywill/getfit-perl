@@ -38,4 +38,6 @@ my $TEXT_LEFT = 40;
 my $TEXT_TOP = $LOWER_RECT - 18;
 #################### End Config Section ##################
 
-print `cat $SCALE_DATA_FILE`;
+print "1277967600\n";
+open( my $in, '<', $SCALE_DATA_FILE ) or die "Unable to open $SCALE_DATA_FILE: $!";
+
