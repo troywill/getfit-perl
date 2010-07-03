@@ -29,7 +29,7 @@ sub new_reading {
     open ( my $out, '>>', $FLAT_FILE ) or die "Unable to open $FLAT_FILE for appending: $!";
     print $out "$time $weight\n";
     close $out;
-    system('getfit-graph /var/lib/getfit-marv/configrc');
+    system('getfit-graph /var/lib/getfit-troy/configrc');
 }
 
 sub create_table_weight_readings {
