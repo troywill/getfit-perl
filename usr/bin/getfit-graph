@@ -34,7 +34,7 @@ my $UPPER_RECT = $YMAX - 20;
 my $LOWER_RECT = 80;
 
 # Circle Constants
-my $RADIUS = 2;
+my $RADIUS = 1;
 
 my $TEXT_LEFT = 40;
 my $TEXT_TOP = $LOWER_RECT - 18;
@@ -88,7 +88,6 @@ sub plot_start_weight {
 }
 
 sub plot_weights {
-    $gfx->strokecolor('lightblue');
     open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open data file: $!";
     $_ = <$OUT>;
     my ( $time, $weight ) = split();
@@ -137,8 +136,8 @@ sub draw_top_goal_line {
     $gfx->linedash(2,4);
     my $goal_weight = 189.4 - ( $MAX_TIME - 1277689877 ) * ( 1000 / 3500 / 86400 );  
     my ( $x1, $y1 ) = &calculate_plot_point ( $goal_weight, $MAX_TIME );
-    $gfx->strokecolor('#FF0000');
     $gfx->line($x1,$y1);
+    $gfx->strokecolor('#FF0000');
     $gfx->stroke;
 }
 
