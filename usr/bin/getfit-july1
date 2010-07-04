@@ -38,6 +38,18 @@ my $TEXT_LEFT = 40;
 my $TEXT_TOP = $LOWER_RECT - 18;
 #################### End Config Section ##################
 
-print "1277967600\n";
+my $july1 = 1277967600;
 open( my $in, '<', $SCALE_DATA_FILE ) or die "Unable to open $SCALE_DATA_FILE: $!";
+
+my $last = 1;
+while (<$in>) {
+    chomp;
+    my ( $time, $weight ) = split;
+    if ( ($time < $july1) ) {
+	$last = $time;
+    } else {
+	last;
+    }
+}
+print "Time prior to July 1: $last\n";
 
