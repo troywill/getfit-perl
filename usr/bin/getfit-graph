@@ -14,7 +14,7 @@ my $config_file = shift or die "/var/lib/getfit-troy/configrc"; # e.g. /var/lib/
 my $config = ConfigReader::Simple->new($config_file);
 my $initial_time = $config->get('START_TIME');
 my $OUTFILE = $config->get('OUTFILE');
-## Graph Constants
+########### Graph Constants
 my $SCALE_DATA_FILE=$config->get('SCALE_DATA_FILE');
 my $MIN_WEIGHT=$config->get('GRAPH_MIN_WEIGHT');
 my $MAX_WEIGHT=$config->get('GRAPH_MAX_WEIGHT');
@@ -22,6 +22,13 @@ my $START_TIME=$config->get('START_TIME');
 my $START_WEIGHT=$config->get('START_WEIGHT');
 my $MIN_TIME = $START_TIME;
 my $MAX_TIME = $config->get('GRAPH_MAX_TIME');
+#### LEGEND AND VIEWPORT VALUES ####
+my $LEGEND_SPACE=$config->get('LEGEND_SPACE');
+my $LEFT = 20;
+my $LEFT_GRAPH = $LEFT + $LEGEND_LEFT;
+my $RIGHT = $XMAX - 20;
+my $UPPER_RECT = $YMAX - 20;
+my $LOWER_RECT = 80;
 
 my $XMAX = 792;
 my $YMAX = 612;
@@ -29,16 +36,13 @@ my $YMAX = 612;
 my $font_height = 8;
 my $spacer = 2;
 
-my $LEFT = 20;
-my $RIGHT = $XMAX - 20;
-my $UPPER_RECT = $YMAX - 20;
-my $LOWER_RECT = 80;
 
 # Circle Constants
 my $RADIUS = .5;
 
 my $TEXT_LEFT = 40;
 my $TEXT_TOP = $LOWER_RECT - 18;
+
 #################### End Config Section ##################
 
 my $pdf=PDF::API3::Compat::API2->new;
