@@ -23,15 +23,15 @@ my $START_WEIGHT=$config->get('START_WEIGHT');
 my $MIN_TIME = $START_TIME;
 my $MAX_TIME = $config->get('GRAPH_MAX_TIME');
 #### LEGEND AND VIEWPORT VALUES ####
+my $XMAX = 792;
+my $YMAX = 612;
+
 my $LEGEND_SPACE=$config->get('LEGEND_SPACE');
-my $LEFT = 20;
-my $LEFT_GRAPH = $LEFT + $LEGEND_LEFT;
+my $VIEW_LEFT=$config->get('VIEW_LEFT');
+my $LEFT_GRAPH = $LEFT;
 my $RIGHT = $XMAX - 20;
 my $UPPER_RECT = $YMAX - 20;
 my $LOWER_RECT = 80;
-
-my $XMAX = 792;
-my $YMAX = 612;
 
 my $font_height = 8;
 my $spacer = 2;
@@ -53,7 +53,7 @@ my $gfx=$page->gfx;
 
 &plot_start_weight;
 &plot_weights;
-&draw_rectangle;
+&draw_rectangle( $VIEW_LEFT, $RIGHT, $UPPER_RECT, $LOWER_RECT );
 &draw_goal_line;
 &draw_top_goal_line;
 
@@ -76,14 +76,14 @@ sub draw_legend {
 sub calculate_plot_point {
     my ( $weight, $time ) = @_;
     my ( $xscale, $yscale ) = &scale;
-    my $x = $LEFT + $xscale * ( $time - $MIN_TIME );
+    my $x = $VIEW_LEFT + $xscale * ( $time - $MIN_TIME );
     my $y = $LOWER_RECT + $yscale * ( $weight - $MIN_WEIGHT );
     return ( $x, $y );
 }
 
 sub scale {
     my $points_per_pound =  ( $UPPER_RECT - $LOWER_RECT ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
-    my $points_per_second = ( $RIGHT - $LEFT ) / ( $MAX_TIME - $MIN_TIME );
+    my $points_per_second = ( $RIGHT - $VIEW_LEFT ) / ( $MAX_TIME - $MIN_TIME );
     return ( $points_per_second, $points_per_pound );
 }
 
