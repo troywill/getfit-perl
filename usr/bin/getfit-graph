@@ -110,12 +110,12 @@ sub plot_weights {
 }
 
 sub draw_rectangle {
-    my @origin = ( $LEFT, $UPPER_RECT );
-    $gfx->move($origin[0],$origin[1]);
-    $gfx->line($RIGHT, $UPPER_RECT);
-    $gfx->line($RIGHT,$LOWER_RECT);
-    $gfx->line($LEFT, $LOWER_RECT);
-    $gfx->line($LEFT, $UPPER_RECT);
+    my ( $left, $right, $top, $bottom ) = @_;
+    $gfx->move($left,$top);
+    $gfx->line($right, $top);
+    $gfx->line($right,$bottom);
+    $gfx->line($left, $bottom);
+    $gfx->line($left, $top);
     $gfx->stroke;
 }
 
@@ -131,7 +131,6 @@ sub draw_goal_line {
     my $goal_weight = $GOAL_START_WEIGHT - ( $MAX_TIME - $GOAL_START_TIME ) * ( $CALS_PER_DAY / 3500 / 86400 );
     my ( $x2, $y2 ) = &calculate_plot_point ( $goal_weight, $MAX_TIME );
     $gfx->line($x2,$y2);
-
     $gfx->stroke;
 }
 
