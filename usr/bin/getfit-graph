@@ -29,14 +29,14 @@ my $MAX_TIME = $config->get('GRAPH_MAX_TIME');
 my $XMAX = $config_graph->get('XMAX');
 my $YMAX = $config_graph->get('YMAX');
 
-my $LEGEND_SPACE=$config->get('LEGEND_SPACE');
-my $VIEW_LEFT=$config_graph->get('VIEW_LEFT');
-my $VIEW_LEFT=$config_graph->get('VIEW_LEFT');
-my $VIEW_LEFT=$config_graph->get('VIEW_LEFT');
-my $VIEW_LEFT=$config_graph->get('VIEW_LEFT');
-my $RIGHT = $XMAX - 20;
-my $UPPER_RECT = $YMAX - 20;
-my $LOWER_RECT = 80;
+my $SPACE_LEFT=$config_graph->get('SPACE_LEFT');
+my $SPACE_RIGHT=$config_graph->get('SPACE_RIGHT');
+my $SPACE_TOP=$config_graph->get('SPACE_TOP');
+my $SPACE_BOTTOM=$config_graph->get('SPACE_BOTTOM');
+
+my $VIEWPORT_RIGHT = $XMAX - $SPACE_RIGHT;
+my $VIEWPORT_TOP = $YMAX - $SPACE_TOP;
+my $VIEWPORT_BOTTOM = $SPACE_BOTTOM;
 
 my $font_height = 8;
 my $spacer = 2;
@@ -46,7 +46,7 @@ my $spacer = 2;
 my $RADIUS = .5;
 
 my $TEXT_LEFT = 40;
-my $TEXT_TOP = $LOWER_RECT - 18;
+my $TEXT_TOP = $VIEWPORT_BOTTOM - 18;
 
 #################### End Config Section ##################
 
@@ -58,7 +58,7 @@ my $gfx=$page->gfx;
 
 &plot_start_weight;
 &plot_weights;
-&draw_rectangle( $VIEW_LEFT, $RIGHT, $UPPER_RECT, $LOWER_RECT );
+&draw_rectangle( $VIEW_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
 &draw_goal_line;
 &draw_top_goal_line;
 
@@ -82,13 +82,13 @@ sub calculate_plot_point {
     my ( $weight, $time ) = @_;
     my ( $xscale, $yscale ) = &scale;
     my $x = $VIEW_LEFT + $xscale * ( $time - $MIN_TIME );
-    my $y = $LOWER_RECT + $yscale * ( $weight - $MIN_WEIGHT );
+    my $y = $VIEWPORT_BOTTOM + $yscale * ( $weight - $MIN_WEIGHT );
     return ( $x, $y );
 }
 
 sub scale {
-    my $points_per_pound =  ( $UPPER_RECT - $LOWER_RECT ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
-    my $points_per_second = ( $RIGHT - $VIEW_LEFT ) / ( $MAX_TIME - $MIN_TIME );
+    my $points_per_pound =  ( $VIEWPORT_TOP - $VIEWPORT_BOTTOM ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
+    my $points_per_second = ( $VIEWPORT_RIGHT - $VIEW_LEFT ) / ( $MAX_TIME - $MIN_TIME );
     return ( $points_per_second, $points_per_pound );
 }
 
