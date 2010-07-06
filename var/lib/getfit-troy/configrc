@@ -11,11 +11,12 @@ SCALE_DATA_FILE=/var/lib/getfit-troy/scale.dat
 LOSS_RATE_FILE=/var/lib/getfit-troy/loss_rate.dat
 
 ########## Graph values ###########
+OUTFILE=/tmp/troy.pdf
+GETFIT_DATABASE=/var/lib/getfit-troy/troy.db
 GRAPH_MAX_WEIGHT=190
 GRAPH_MIN_WEIGHT=135
-GETFIT_DATABASE=/var/lib/getfit-troy/troy.db
+VIEW_LEFT=20
 CALORIES_PER_DAY=7000
-OUTFILE=/tmp/troy.pdf
 MIN_TIME=1277685811
 # August 1
 GRAPH_MAX_TIME=1280646000

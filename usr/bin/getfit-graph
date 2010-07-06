@@ -28,7 +28,6 @@ my $YMAX = 612;
 
 my $LEGEND_SPACE=$config->get('LEGEND_SPACE');
 my $VIEW_LEFT=$config->get('VIEW_LEFT');
-my $LEFT_GRAPH = $LEFT;
 my $RIGHT = $XMAX - 20;
 my $UPPER_RECT = $YMAX - 20;
 my $LOWER_RECT = 80;
