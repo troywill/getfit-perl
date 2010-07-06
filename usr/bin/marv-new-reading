@@ -20,7 +20,7 @@ my $dbh =
   DBI->connect( "dbi:SQLite:$GETFIT_DATABASE", "", "",
     { RaiseError => 1, AutoCommit => 1 } );
 
-&create_table_weight_readings($dbh);
+# &create_table_weight_readings($dbh);
 &new_reading($dbh);
 
 sub new_reading {
