@@ -8,11 +8,12 @@ use PDF::API3::Compat::API2::Util;
 use Getfit::ConfigReader::Simple;
 use Getfit::Statistics;
 
-my $config_file = shift or die "/var/lib/getfit-troy/configrc"; # e.g. /var/lib/getfit-troy/configrc
 my $graph_constants = "/var/lib/getfit-perl/graph_constants.conf";
+my $config_file = shift or die "/var/lib/getfit-troy/configrc"; # e.g. /var/lib/getfit-troy/configrc
 
 #################### Begin Config Section ##################
 my $config = ConfigReader::Simple->new($config_file);
+my $config_graph = ConfigReader::Simple->new($graph_constants);
 my $initial_time = $config->get('START_TIME');
 my $OUTFILE = $config->get('OUTFILE');
 ########### Graph Constants
@@ -23,15 +24,16 @@ my $START_TIME=$config->get('START_TIME');
 my $START_WEIGHT=$config->get('START_WEIGHT');
 my $MIN_TIME = $START_TIME;
 my $MAX_TIME = $config->get('GRAPH_MAX_TIME');
+
 #### LEGEND AND VIEWPORT VALUES ####
-my $XMAX = 792;
-my $YMAX = 612;
+my $XMAX = $config_graph->get('XMAX');
+my $YMAX = $config_graph->get('YMAX');
 
 my $LEGEND_SPACE=$config->get('LEGEND_SPACE');
-my $VIEW_LEFT=$config->get('VIEW_LEFT');
-my $VIEW_LEFT=$config->get('VIEW_LEFT');
-my $VIEW_LEFT=$config->get('VIEW_LEFT');
-my $VIEW_LEFT=$config->get('VIEW_LEFT');
+my $VIEW_LEFT=$config_graph->get('VIEW_LEFT');
+my $VIEW_LEFT=$config_graph->get('VIEW_LEFT');
+my $VIEW_LEFT=$config_graph->get('VIEW_LEFT');
+my $VIEW_LEFT=$config_graph->get('VIEW_LEFT');
 my $RIGHT = $XMAX - 20;
 my $UPPER_RECT = $YMAX - 20;
 my $LOWER_RECT = 80;
