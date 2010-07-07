@@ -59,7 +59,7 @@ my $priv_func = sub {
 use lib '/usr/lib/perl5';
 use Getfit::ConfigReader::Simple;
 
-my $config = ConfigReader::Simple->new('/var/lib/getfit-marv/configrc');
+my $config = ConfigReader::Simple->new('/var/lib/getfit-troy/troy.conf'); #FIXME
 my $initial_time = $config->get('START_TIME');
 my $initial_weight = $config->get('START_WEIGHT');
 my $loss_rate = $config->get('INITIAL_LOSS_RATE');
