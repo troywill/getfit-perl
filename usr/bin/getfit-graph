@@ -8,8 +8,8 @@ use PDF::API3::Compat::API2::Util;
 use Getfit::ConfigReader::Simple;
 use Getfit::Statistics;
 
-my $graph_constants = "/var/lib/getfit-perl/graph_constants.conf";
-my $config_file = shift or die "/var/lib/getfit-troy/configrc"; # e.g. /var/lib/getfit-troy/configrc
+my $graph_constants = '/var/lib/getfit-perl/graph_constants.conf';
+my $config_file = shift or die "/var/lib/getfit-troy/configrc; # e.g. /var/lib/getfit-troy/configrc: $!";
 
 #################### Begin Config Section ##################
 my $config = ConfigReader::Simple->new($config_file);
@@ -34,6 +34,7 @@ my $SPACE_RIGHT=$config_graph->get('SPACE_RIGHT');
 my $SPACE_TOP=$config_graph->get('SPACE_TOP');
 my $SPACE_BOTTOM=$config_graph->get('SPACE_BOTTOM');
 
+my $VIEWPORT_LEFT = $SPACE_LEFT;
 my $VIEWPORT_RIGHT = $XMAX - $SPACE_RIGHT;
 my $VIEWPORT_TOP = $YMAX - $SPACE_TOP;
 my $VIEWPORT_BOTTOM = $SPACE_BOTTOM;
@@ -58,7 +59,7 @@ my $gfx=$page->gfx;
 
 &plot_start_weight;
 &plot_weights;
-&draw_rectangle( $VIEW_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
+&draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
 &draw_goal_line;
 &draw_top_goal_line;
 
@@ -81,14 +82,14 @@ sub draw_legend {
 sub calculate_plot_point {
     my ( $weight, $time ) = @_;
     my ( $xscale, $yscale ) = &scale;
-    my $x = $VIEW_LEFT + $xscale * ( $time - $MIN_TIME );
+    my $x = $VIEWPORT_LEFT + $xscale * ( $time - $MIN_TIME );
     my $y = $VIEWPORT_BOTTOM + $yscale * ( $weight - $MIN_WEIGHT );
     return ( $x, $y );
 }
 
 sub scale {
     my $points_per_pound =  ( $VIEWPORT_TOP - $VIEWPORT_BOTTOM ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
-    my $points_per_second = ( $VIEWPORT_RIGHT - $VIEW_LEFT ) / ( $MAX_TIME - $MIN_TIME );
+    my $points_per_second = ( $VIEWPORT_RIGHT - $VIEWPORT_LEFT ) / ( $MAX_TIME - $MIN_TIME );
     return ( $points_per_second, $points_per_pound );
 }
 
