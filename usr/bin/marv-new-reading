@@ -7,7 +7,7 @@ use ConfigReader::Simple;
 use lib '/usr/lib/perl5';
 use Getfit::ConfigReader::Simple;
 
-my $config = ConfigReader::Simple->new('/var/lib/getfit-marv/configrc');
+my $config = ConfigReader::Simple->new('/var/lib/getfit-marv/marv.conf');
 die "Could not read config! $ConfigReader::Simple::ERROR\n"
   unless ref $config;
 
