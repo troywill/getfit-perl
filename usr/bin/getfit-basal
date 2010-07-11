@@ -3,10 +3,7 @@ use warnings;
 use strict;
 use lib '/usr/lib/perl5';
 use lib '/usr/lib/perl5/Getfit';
-use PDF::API3::Compat::API2;
-use PDF::API3::Compat::API2::Util;
 use Getfit::ConfigReader::Simple;
-use Getfit::Statistics;
 my $config_file = shift or die "# e.g. /var/lib/getfit-troy/troy.conf: $!";
 my $graph_constants = '/var/lib/getfit-perl/graph_constants.conf';
 
@@ -16,6 +13,14 @@ my $gender = $config->get('GENDER');
 my $age = $config->get('AGE');
 my $height = $config->get('HEIGHT');
 
-print "$gender, $age, $height\n";
+&p ( 180, $height, $age );
 
-
+sub p {
+    my ( $weight_lbs, $height_in, $age ) = @_;
+    my $weight = $weight_lbs / 2.2046;
+    my $height = $height_in * 2.54;
+    print "W: $weight\n";
+    print "H: $height\n";
+    my $bmr = int(( (10.0*$weight) + (6.25*$height)-(5.0*$age) + 5));
+    print "BMR = $bmr kcal/day\n";
+}
