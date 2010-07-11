@@ -63,6 +63,6 @@ sub run_will_filter {
         }
 
         #	print "Epoch: $epoch\nOld time: $old_time\nDiff: $time_diff\n----\n";
-	printf ("Fw: %.2f %.2f\n", $filter_weight, $weight_reading);
+	printf ("%d %.2f %.2f\n", $epoch, $filter_weight, $weight_reading);
     }
 }
