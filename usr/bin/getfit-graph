@@ -59,6 +59,7 @@ my $gfx=$page->gfx;
 &plot_weights;
 &draw_legend;
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
+&draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, 580, 350 );
 &draw_goal_line;
 &draw_top_goal_line;
 
