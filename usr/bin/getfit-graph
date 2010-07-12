@@ -96,7 +96,7 @@ sub calculate_plot_point {
 }
 
 sub scale {
-    my $points_per_pound =  ( $VIEWPORT_TOP - $VIEWPORT_BOTTOM ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
+    my $points_per_pound =  ( $FILTER_TOP - $FILTER_BOTTOM ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
     my $points_per_second = ( $VIEWPORT_RIGHT - $VIEWPORT_LEFT ) / ( $MAX_TIME - $MIN_TIME );
     return ( $points_per_second, $points_per_pound );
 }
