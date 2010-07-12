@@ -70,6 +70,22 @@ $pdf->saveas($OUTFILE);
 $pdf->end();
 
 ########## Begin: Filter sub routines ###########
+sub plot_filter_weights {
+    my $FILTER_DATA_FILE = $config->get('FILTER_DATA_FILE');
+    open( my $OUT, '<', $FILTER_DATA_FILE ) or die "Unable to open data file: $!";
+    $_ = <$OUT>;
+    my ( $time, $weight ) = split();
+    my ( $x, $y ) = &calculate_filter_plot_point ( $weight, $time );
+    $gfx->move($x,$y);
+    while (<$OUT>) {
+	my ( $time, $weight ) = split;
+	my ( $x, $y ) = &calculate_filter_plot_point ( $weight, $time );
+	$gfx->line($x,$y);
+	$gfx->move($x,$y);
+    }
+    $gfx->stroke;
+}
+
 sub calculate_filter_plot_point {
     my ( $weight, $time ) = @_;
     my ( $xscale, $yscale ) = &filter_scale;
@@ -84,23 +100,6 @@ sub filter_scale {
     return ( $points_per_second, $points_per_pound );
 }
 
-sub plot_filter_weights {
-    open( my $OUT, '<', $FILTER_DATA_FILE ) or die "Unable to open data file: $!";
-    $_ = <$OUT>;
-    my ( $time, $weight ) = split();
-    my ( $x, $y ) = &calculate_filter_plot_point ( $weight, $time );
-    $gfx->circle($x,$y,$RADIUS);
-    $gfx->move($x,$y);
-    while (<$OUT>) {
-	my ( $time, $weight ) = split;
-	my ( $x, $y ) = &calculate_filter_plot_point ( $weight, $time );
-	$gfx->line($x,$y);
-	$gfx->circle($x,$y,$RADIUS);
-	$gfx->move($x,$y);
-    }
-    $gfx->stroke;
-}
-
 ########## End: Filter sub routines ###########
 
 sub draw_legend {
@@ -110,15 +109,15 @@ sub draw_legend {
     $gfx->textlabel($LEGEND_LEFT,$y-$font_height/2,$font,$font_height,$MAX_WEIGHT);
     ( $x, $y ) = &calculate_plot_point ( $MIN_WEIGHT, 0);
     $gfx->textlabel($LEGEND_LEFT,$y-$font_height/2,$font,$font_height,$MIN_WEIGHT);
-    $gfx->textlabel($TEXT_LEFT,$TEXT_TOP,$font,$font_height,"Troy Will");
-    my $current_goal = sprintf( "%.2f", $Marv::Statistics::Current_goal);
-    $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-$font_height),$font,$font_height,  "Current Goal: $current_goal");
+#    $gfx->textlabel($TEXT_LEFT,$TEXT_TOP,$font,$font_height,"Troy Will");
+#    my $current_goal = sprintf( "%.2f", $Marv::Statistics::Current_goal);
+#    $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-$font_height),$font,$font_height,  "Current Goal: $current_goal");
 # $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-$font_height),$font,$font_height,  "Beginning Unix Time: ");
-    $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-2*$font_height),$font,$font_height,"Beginning Weight: 183.6");
+#    $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-2*$font_height),$font,$font_height,"Beginning Weight: 183.6");
     chomp( my $date = `date` );
     my $string = 'Current Unix Time: ' . time . " ($date)";
     $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-3*$font_height),$font,$font_height,$string);
-    $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-4*$font_height),$font,$font_height,"Current Weight: $current_goal");
+#    $gfx->textlabel($TEXT_LEFT,($TEXT_TOP-4*$font_height),$font,$font_height,"Current Weight: $current_goal");
 }
 
 sub calculate_plot_point {
@@ -188,6 +187,10 @@ sub draw_top_goal_line {
     my $TOP_GOAL_WEIGHT=$config->get('TOP_GOAL_WEIGHT');
     my $TOP_GOAL_TIME=$config->get('TOP_GOAL_TIME');
     my $TOP_GOAL_CALORIES=$config->get('TOP_GOAL_CALORIES');
+    my $TOP_GOAL_TEXT=$config->get('TOP_GOAL_TEXT');
+    my $TOP_GOAL_TEXT_X_POINTS=$config->get('TOP_GOAL_TEXT_X_POINTS');
+    my $TOP_GOAL_TEXT_Y_POINTS=$config->get('TOP_GOAL_TEXT_Y_POINTS');
+
     my ( $x, $y ) = &calculate_plot_point ( $TOP_GOAL_WEIGHT, $TOP_GOAL_TIME );
     $gfx->move($x,$y);
     $gfx->linedash(2,4);
@@ -196,6 +199,10 @@ sub draw_top_goal_line {
     $gfx->line($x1,$y1);
     $gfx->strokecolor('#FF0000');
     $gfx->stroke;
+
+    $gfx->textlabel($TOP_GOAL_TEXT_X_POINTS,$TOP_GOAL_TEXT_Y_POINTS,$font,$font_height,$TOP_GOAL_TEXT);
+
+    
 }
 
 exit;
