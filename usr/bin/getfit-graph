@@ -95,6 +95,14 @@ sub calculate_plot_point {
     return ( $x, $y );
 }
 
+sub calculate_filter_plot_point {
+    my ( $weight, $time ) = @_;
+    my ( $xscale, $yscale ) = &filter_scale;
+    my $x = $VIEWPORT_LEFT + $xscale * ( $time - $MIN_TIME );
+    my $y = $FILTER_BOTTOM + $yscale * ( $weight - $MIN_WEIGHT );
+    return ( $x, $y );
+}
+
 sub scale {
     my $points_per_pound =  ( $VIEWPORT_TOP - $VIEWPORT_BOTTOM ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
     my $points_per_second = ( $VIEWPORT_RIGHT - $VIEWPORT_LEFT ) / ( $MAX_TIME - $MIN_TIME );
