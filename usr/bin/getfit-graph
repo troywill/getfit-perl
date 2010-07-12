@@ -57,6 +57,7 @@ my $gfx=$page->gfx;
 
 &plot_start_weight;
 &plot_weights;
+&plot_filter_weights;
 &draw_legend;
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
 
