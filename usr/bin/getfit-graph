@@ -157,6 +157,7 @@ sub plot_weights {
 	$gfx->move($x,$y);
     }
     $gfx->stroke;
+    close $OUT;
 }
 
 sub draw_rectangle {
