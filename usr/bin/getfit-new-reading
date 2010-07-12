@@ -2,11 +2,12 @@
 use strict;
 use warnings;
 use DBI;
-use ConfigReader::Simple;
 use lib '/usr/lib/perl5';
 use Getfit::ConfigReader::Simple;
 
-my $config = ConfigReader::Simple->new('/var/lib/getfit-troy/troy.conf');
+
+my $config_file = shift or die "# e.g. /var/lib/getfit-troy/troy.conf: $!";
+my $config = ConfigReader::Simple->new($config_file);
 die "Could not read config! $ConfigReader::Simple::ERROR\n"
   unless ref $config;
 
@@ -28,7 +29,6 @@ sub new_reading {
     open ( my $out, '>>', $FLAT_FILE ) or die "Unable to open $FLAT_FILE for appending: $!";
     print $out "$time $weight\n";
     close $out;
-    system('getfit-graph /var/lib/getfit-troy/troy.conf');
 }
 
 sub create_table_weight_readings {
@@ -37,22 +37,4 @@ sub create_table_weight_readings {
 	"CREATE TABLE weight_readings (id INTEGER PRIMARY KEY AUTOINCREMENT, unix_epoch integer UNIQUE, weight DECIMAL )"
 	);
     $dbh->do("INSERT INTO weight_readings VALUES (NULL,1263667739,179.0)");
-}
-
-my $initial_time = 1263667739; # Jan 16, 2010
-my $initial_weight = 179.0;
-my $loss_rate = 500; # goal weight loss rate in cals/day, about 2 lb per week
-my $lbs_per_second = $loss_rate / 3500 / 24 / 60 / 60;
-my $weight_goal = &get_weight_goal($initial_time, $initial_weight, $lbs_per_second);
-
-printf( "Initial weight: %.2f\n", $initial_weight);
-print "Weight goal: $weight_goal\n";
-
-sub get_weight_goal {
-    my ( $initial_time, $initial_weight, $lbs_per_second ) = @_;
-    my $elapsed_time = time - $initial_time;
-    my $loss = $elapsed_time * $lbs_per_second;
-    my $weight_goal = $initial_weight - $loss;
-    $weight_goal = sprintf("%.2f",$weight_goal);
-    return $weight_goal;
 }
