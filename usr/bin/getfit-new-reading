@@ -2,7 +2,6 @@
 use strict;
 use warnings;
 use DBI;
-use Text::CSV;
 use ConfigReader::Simple;
 use lib '/usr/lib/perl5';
 use Getfit::ConfigReader::Simple;
