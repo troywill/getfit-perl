@@ -70,6 +70,41 @@ my $FILTER_BOTTOM = 350;
 $pdf->saveas($OUTFILE);
 $pdf->end();
 
+########## Begin: Filter sub routines ###########
+sub calculate_filter_plot_point {
+    my ( $weight, $time ) = @_;
+    my ( $xscale, $yscale ) = &filter_scale;
+    my $x = $VIEWPORT_LEFT + $xscale * ( $time - $MIN_TIME );
+    my $y = $FILTER_BOTTOM + $yscale * ( $weight - $MIN_WEIGHT );
+    return ( $x, $y );
+}
+
+sub filter_scale {
+    my $points_per_pound =  ( $FILTER_TOP - $FILTER_BOTTOM ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
+    my $points_per_second = ( $VIEWPORT_RIGHT - $VIEWPORT_LEFT ) / ( $MAX_TIME - $MIN_TIME );
+    return ( $points_per_second, $points_per_pound );
+}
+
+sub plot_filter_weights {
+    open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open data file: $!";
+    $_ = <$OUT>;
+    my ( $time, $weight ) = split();
+    my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
+    $gfx->circle($x,$y,$RADIUS);
+    $gfx->circle($x,$y,5);
+    $gfx->move($x,$y);
+    while (<$OUT>) {
+	my ( $time, $weight ) = split;
+	my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
+	$gfx->line($x,$y);
+	$gfx->circle($x,$y,$RADIUS);
+	$gfx->move($x,$y);
+    }
+    $gfx->stroke;
+}
+
+########## End: Filter sub routines ###########
+
 sub draw_legend {
     ################# Text ##########
     my $LEGEND_LEFT = $config_graph->get('LEGEND_LEFT');
@@ -96,22 +131,8 @@ sub calculate_plot_point {
     return ( $x, $y );
 }
 
-sub calculate_filter_plot_point {
-    my ( $weight, $time ) = @_;
-    my ( $xscale, $yscale ) = &filter_scale;
-    my $x = $VIEWPORT_LEFT + $xscale * ( $time - $MIN_TIME );
-    my $y = $FILTER_BOTTOM + $yscale * ( $weight - $MIN_WEIGHT );
-    return ( $x, $y );
-}
-
 sub scale {
     my $points_per_pound =  ( $VIEWPORT_TOP - $VIEWPORT_BOTTOM ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
-    my $points_per_second = ( $VIEWPORT_RIGHT - $VIEWPORT_LEFT ) / ( $MAX_TIME - $MIN_TIME );
-    return ( $points_per_second, $points_per_pound );
-}
-
-sub filter_scale {
-    my $points_per_pound =  ( $FILTER_TOP - $FILTER_BOTTOM ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
     my $points_per_second = ( $VIEWPORT_RIGHT - $VIEWPORT_LEFT ) / ( $MAX_TIME - $MIN_TIME );
     return ( $points_per_second, $points_per_pound );
 }
@@ -122,22 +143,6 @@ sub plot_start_weight {
 }
 
 sub plot_weights {
-    open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open data file: $!";
-    $_ = <$OUT>;
-    my ( $time, $weight ) = split();
-    my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
-    $gfx->circle($x,$y,$RADIUS);
-    $gfx->move($x,$y);
-    while (<$OUT>) {
-	my ( $time, $weight ) = split;
-	my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
-	$gfx->line($x,$y);
-	$gfx->circle($x,$y,$RADIUS);
-	$gfx->move($x,$y);
-    }
-    $gfx->stroke;
-}
-sub plot_filter_weights {
     open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open data file: $!";
     $_ = <$OUT>;
     my ( $time, $weight ) = split();
