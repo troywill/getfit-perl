@@ -89,13 +89,13 @@ sub plot_filter_weights {
     open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open data file: $!";
     $_ = <$OUT>;
     my ( $time, $weight ) = split();
-    my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
+    my ( $x, $y ) = &calculate_filter_plot_point ( $weight, $time );
     $gfx->circle($x,$y,$RADIUS);
     $gfx->circle($x,$y,5);
     $gfx->move($x,$y);
     while (<$OUT>) {
 	my ( $time, $weight ) = split;
-	my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
+	my ( $x, $y ) = &calculate_filter_plot_point ( $weight, $time );
 	$gfx->line($x,$y);
 	$gfx->circle($x,$y,$RADIUS);
 	$gfx->move($x,$y);
