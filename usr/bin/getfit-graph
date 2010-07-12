@@ -55,14 +55,13 @@ my $page = $pdf->page;
 $page->mediabox(792,612); # Letter Landscape
 my $gfx=$page->gfx;
 
+my $FILTER_TOP = 580;
+my $FILTER_BOTTOM = 350;
 &plot_start_weight;
 &plot_weights;
 &plot_filter_weights;
 &draw_legend;
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
-
-my $FILTER_TOP = 580;
-my $FILTER_BOTTOM = 350;
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $FILTER_TOP, $FILTER_BOTTOM );
 &draw_goal_line;
 &draw_top_goal_line;
