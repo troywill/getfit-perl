@@ -59,7 +59,10 @@ my $gfx=$page->gfx;
 &plot_weights;
 &draw_legend;
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
-&draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, 580, 350 );
+
+my $FILTER_TOP = 580;
+my $FILTER_BOTTOM = 350;
+&draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $FILTER_TOP, $FILTER_BOTTOM );
 &draw_goal_line;
 &draw_top_goal_line;
 
@@ -98,12 +101,34 @@ sub scale {
     return ( $points_per_second, $points_per_pound );
 }
 
+sub filter_scale {
+    my $points_per_pound =  ( $VIEWPORT_TOP - $VIEWPORT_BOTTOM ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
+    my $points_per_second = ( $VIEWPORT_RIGHT - $VIEWPORT_LEFT ) / ( $MAX_TIME - $MIN_TIME );
+    return ( $points_per_second, $points_per_pound );
+}
+
 sub plot_start_weight {
     my ( $x, $y ) = &calculate_plot_point ( $START_WEIGHT, $START_TIME );
     $gfx->circle($x,$y,$RADIUS);
 }
 
 sub plot_weights {
+    open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open data file: $!";
+    $_ = <$OUT>;
+    my ( $time, $weight ) = split();
+    my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
+    $gfx->circle($x,$y,$RADIUS);
+    $gfx->move($x,$y);
+    while (<$OUT>) {
+	my ( $time, $weight ) = split;
+	my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
+	$gfx->line($x,$y);
+	$gfx->circle($x,$y,$RADIUS);
+	$gfx->move($x,$y);
+    }
+    $gfx->stroke;
+}
+sub plot_filter_weights {
     open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open data file: $!";
     $_ = <$OUT>;
     my ( $time, $weight ) = split();
