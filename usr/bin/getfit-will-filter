@@ -21,6 +21,8 @@ my $dbh =
 
 
 &run_will_filter($dbh);
+# &print_weight_table($dbh);
+my ( $id, $epoch, $weight_reading ) = &get_initial_value($dbh);
 
 sub print_weight_table {
     my $dbh = shift;
@@ -31,6 +33,20 @@ sub print_weight_table {
         print "\t$id\t$epoch\t$weight_reading\n";
     }
 }
+
+sub get_initial_value {
+    my $dbh = shift;
+    my ( $id, $epoch, $weight_reading ) = ( 0, 0, 0 );
+    my $weight_readings =
+	$dbh->selectall_arrayref("SELECT * FROM weight_readings ORDER BY id LIMIT 1");
+    foreach my $row (@$weight_readings) {
+        ( $id, $epoch, $weight_reading ) = @$row;
+    }
+    return ($id, $epoch, $weight_reading);
+}
+
+    
+
 
 sub run_will_filter {
     my $dbh                = shift;
@@ -63,6 +79,6 @@ sub run_will_filter {
         }
 
         #print "Epoch: $epoch\nOld time: $old_time\nDiff: $time_diff\n----\n";
-	printf ("%d %.2f %.2f\n", $epoch, $filter_weight, $weight_reading);
+#	printf ("%d %.2f %.2f\n", $epoch, $filter_weight, $weight_reading);
     }
 }
