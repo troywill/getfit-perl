@@ -1,9 +1,8 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use DBI;
-use Text::CSV;
 use ConfigReader::Simple;
+use DBI;
 
 my $config_file = shift || die "Please supply config file, e.g. /var/lib/getfit-troy/troy.conf";
 my $config = ConfigReader::Simple->new($config_file);
