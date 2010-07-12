@@ -22,7 +22,6 @@ my $dbh =
 
 &run_will_filter($dbh);
 # &print_weight_table($dbh);
-my ( $id, $epoch, $weight_reading ) = &get_initial_value($dbh);
 
 sub print_weight_table {
     my $dbh = shift;
@@ -52,8 +51,9 @@ sub run_will_filter {
     my $dbh                = shift;
     my $old_time           = 0;
     my $time_diff          = 0;
-    my $epoch              = 1262731713;
-    my $weight_reading     = 177.8;
+    my ( $id, $epoch, $weight_reading ) = &get_initial_value($dbh);
+    # my $epoch              = 1262731713;
+    # my $weight_reading     = 177.8;
     my $old_weight_reading = $weight_reading;
     my $filter_weight      = $weight_reading;
     my $min_weight         = $weight_reading;
@@ -79,6 +79,6 @@ sub run_will_filter {
         }
 
         #print "Epoch: $epoch\nOld time: $old_time\nDiff: $time_diff\n----\n";
-#	printf ("%d %.2f %.2f\n", $epoch, $filter_weight, $weight_reading);
+	printf ("%d %.2f %.2f\n", $epoch, $filter_weight, $weight_reading);
     }
 }
