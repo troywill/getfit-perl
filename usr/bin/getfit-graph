@@ -57,8 +57,6 @@ my $gfx=$page->gfx;
 
 my $FILTER_TOP = 580;
 my $FILTER_BOTTOM = 350;
-$FILTER_TOP = 400;
-$FILTER_BOTTOM = 350;
 &plot_start_weight;
 &plot_weights;
 &plot_filter_weights;
@@ -87,7 +85,7 @@ sub filter_scale {
 }
 
 sub plot_filter_weights {
-    open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open data file: $!";
+    open( my $OUT, '<', $FILTER_DATA_FILE ) or die "Unable to open data file: $!";
     $_ = <$OUT>;
     my ( $time, $weight ) = split();
     my ( $x, $y ) = &calculate_filter_plot_point ( $weight, $time );
