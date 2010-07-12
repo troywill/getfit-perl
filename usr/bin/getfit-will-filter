@@ -10,6 +10,7 @@ my $config = ConfigReader::Simple->new($config_file);
 die "Could not read config! $ConfigReader::Simple::ERROR\n"
     unless ref $config;
 my $GETFIT_DATABASE = $config->get('GETFIT_DATABASE');
+my $FILTER_DATA_FILE = $config->get('FILTER_DATA_FILE');
 my $CALORIES_PER_DAY = $config->get('CALORIES_PER_DAY');
 
 my $max_gain_rate  = ( ($CALORIES_PER_DAY/3500) / 24 / 60 / 60 );              #lbs per second
@@ -18,7 +19,6 @@ my $max_loss_rate  = ( ($CALORIES_PER_DAY/3500) / 24 / 60 / 60 );              #
 my $dbh =
   DBI->connect( "dbi:SQLite:$GETFIT_DATABASE", "", "",
 		{ RaiseError => 1, AutoCommit => 1 } );
-
 
 &run_will_filter($dbh);
 # &print_weight_table($dbh);
@@ -44,20 +44,17 @@ sub get_initial_value {
     return ($id, $epoch, $weight_reading);
 }
 
-    
-
-
 sub run_will_filter {
     my $dbh                = shift;
     my $old_time           = 0;
     my $time_diff          = 0;
     my ( $id, $epoch, $weight_reading ) = &get_initial_value($dbh);
-    # my $epoch              = 1262731713;
-    # my $weight_reading     = 177.8;
     my $old_weight_reading = $weight_reading;
     my $filter_weight      = $weight_reading;
     my $min_weight         = $weight_reading;
     my $max_weight         = $weight_reading;
+
+    open( my $out, '>', $FILTER_DATA_FILE ) or die "Unable to open filter data file for output: $!";
 
     my $weight_readings =
 	$dbh->selectall_arrayref("SELECT * FROM weight_readings ORDER BY id");
@@ -80,5 +77,7 @@ sub run_will_filter {
 
         #print "Epoch: $epoch\nOld time: $old_time\nDiff: $time_diff\n----\n";
 	printf ("%d %.2f %.2f\n", $epoch, $filter_weight, $weight_reading);
+	printf $out ("%d %.2f\n", $epoch, $filter_weight);
     }
+    close $out;
 }
