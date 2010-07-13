@@ -24,6 +24,10 @@ sub new_reading {
     my $dbh = shift;
     print "Weight?: "; my $weight = <STDIN>;
     chomp($weight);
+    if ( $weight eq '' ) {
+	print "DEBUG";
+	exit;
+    }
     my $time = time;
     $dbh->do("INSERT INTO weight_readings VALUES (NULL,$time,$weight)");
     open ( my $out, '>>', $FLAT_FILE ) or die "Unable to open $FLAT_FILE for appending: $!";
