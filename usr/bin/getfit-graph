@@ -16,6 +16,7 @@ my $config_graph = ConfigReader::Simple->new($graph_constants);
 my $initial_time = $config->get('START_TIME');
 my $OUTFILE = $config->get('OUTFILE');
 ########### Graph Constants
+my $LEGEND_LEFT = $config_graph->get('LEGEND_LEFT');
 my $GOAL_START_TIME = $config->get('GOAL_START_TIME');
 my $SCALE_DATA_FILE=$config->get('SCALE_DATA_FILE');
 my $MIN_WEIGHT=$config->get('GRAPH_MIN_WEIGHT');
@@ -64,6 +65,7 @@ my $FILTER_GRAPH_MIN_WEIGHT=$config->get('FILTER_GRAPH_MIN_WEIGHT');
 &plot_start_weight;
 &plot_weights;
 &plot_filter_weights;
+&plot_filter_h_lines;
 &draw_legend;
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $FILTER_TOP, $FILTER_BOTTOM );
@@ -74,6 +76,19 @@ $pdf->saveas($OUTFILE);
 $pdf->end();
 
 ########## Begin: Filter sub routines ###########
+sub plot_filter_h_lines {
+    # Draw Horizontal 1
+    my $HOR_FILTER_1=$config->get('HOR_FILTER_1');
+    my ( $x1, $y1 ) = &calculate_filter_plot_point (  $HOR_FILTER_1, $GOAL_START_TIME );
+    $gfx->move($x1,$y1);
+    $gfx->linedash(1,5);
+    my ( $x2, $y2 ) = &calculate_filter_plot_point ( $HOR_FILTER_1, $MAX_TIME );
+    $gfx->line($x2,$y2);
+    $gfx->stroke;
+    $gfx->linedash(10,0);
+    $gfx->textlabel($LEGEND_LEFT,$y1-$font_height/2,$font,$font_height,$HOR_FILTER_1);
+}
+
 sub plot_filter_weights {
     my $FILTER_DATA_FILE = $config->get('FILTER_DATA_FILE');
     open( my $OUT, '<', $FILTER_DATA_FILE ) or die "Unable to open data file: $!";
@@ -87,15 +102,6 @@ sub plot_filter_weights {
 	$gfx->line($x,$y);
 	$gfx->move($x,$y);
     }
-    # Draw Horizontal 1
-    my $HOR_FILTER_1=$config->get('HOR_FILTER_1');
-    my ( $x1, $y1 ) = &calculate_filter_plot_point (  $HOR_FILTER_1, $GOAL_START_TIME );
-    $gfx->move($x1,$y1);
-#    $gfx->linedash(1,5);
-    my ( $x2, $y2 ) = &calculate_filter_plot_point ( $HOR_FILTER_1, $MAX_TIME );
-    $gfx->line($x2,$y2);
-    $gfx->stroke;
-#    $gfx->linedash(1,0);
 }
 
 sub calculate_filter_plot_point {
@@ -116,7 +122,6 @@ sub filter_scale {
 
 sub draw_legend {
     ################# Text ##########
-    my $LEGEND_LEFT = $config_graph->get('LEGEND_LEFT');
     my ( $x, $y ) = &calculate_plot_point ( $MAX_WEIGHT, 0);
     $gfx->textlabel($LEGEND_LEFT,$y-$font_height/2,$font,$font_height,$MAX_WEIGHT);
     ( $x, $y ) = &calculate_plot_point ( $MIN_WEIGHT, 0);
