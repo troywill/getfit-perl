@@ -151,11 +151,12 @@ sub plot_weights {
     $gfx->move($x,$y);
     while (<$OUT>) {
 	my ( $time, $weight ) = split;
-	my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
+	( $x, $y ) = &calculate_plot_point ( $weight, $time );
 	$gfx->line($x,$y);
 	$gfx->circle($x,$y,$RADIUS);
 	$gfx->move($x,$y);
     }
+    $gfx->circle($x,$y,2);
     $gfx->stroke;
     close $OUT;
 }
