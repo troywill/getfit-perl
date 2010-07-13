@@ -55,8 +55,11 @@ my $page = $pdf->page;
 $page->mediabox(792,612); # Letter Landscape
 my $gfx=$page->gfx;
 
-my $FILTER_TOP = 580;
-my $FILTER_BOTTOM = 350;
+my $FILTER_TOP=$config->get('FILTER_TOP');
+my $FILTER_BOTTOM=$config->get('FILTER_BOTTOM');
+my $FILTER_GRAPH_MAX_WEIGHT=$config->get('FILTER_GRAPH_MAX_WEIGHT');
+my $FILTER_GRAPH_MIN_WEIGHT=$config->get('FILTER_GRAPH_MIN_WEIGHT');
+
 &plot_start_weight;
 &plot_weights;
 &plot_filter_weights;
@@ -90,12 +93,12 @@ sub calculate_filter_plot_point {
     my ( $weight, $time ) = @_;
     my ( $xscale, $yscale ) = &filter_scale;
     my $x = $VIEWPORT_LEFT + $xscale * ( $time - $MIN_TIME );
-    my $y = $FILTER_BOTTOM + $yscale * ( $weight - $MIN_WEIGHT );
+    my $y = $FILTER_BOTTOM + $yscale * ( $weight - $FILTER_GRAPH_MIN_WEIGHT );
     return ( $x, $y );
 }
 
 sub filter_scale {
-    my $points_per_pound =  ( $FILTER_TOP - $FILTER_BOTTOM ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
+    my $points_per_pound =  ( $FILTER_TOP - $FILTER_BOTTOM ) / ( $FILTER_GRAPH_MAX_WEIGHT - $FILTER_GRAPH_MIN_WEIGHT );
     my $points_per_second = ( $VIEWPORT_RIGHT - $VIEWPORT_LEFT ) / ( $MAX_TIME - $MIN_TIME );
     return ( $points_per_second, $points_per_pound );
 }
