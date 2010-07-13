@@ -62,6 +62,7 @@ my $FILTER_BOTTOM=$config->get('FILTER_BOTTOM');
 my $FILTER_GRAPH_MAX_WEIGHT=$config->get('FILTER_GRAPH_MAX_WEIGHT');
 my $FILTER_GRAPH_MIN_WEIGHT=$config->get('FILTER_GRAPH_MIN_WEIGHT');
 
+&get_goal;
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
 &plot_start_weight;
 &plot_weights;
@@ -103,7 +104,20 @@ sub plot_filter_h_lines {
     ( $x2, $y2 ) = &calculate_filter_plot_point ( $HOR_FILTER_3, $MAX_TIME );
     $gfx->line($x2,$y2);
     $gfx->textlabel($LEGEND_LEFT,$y1-$font_height/2,$font,$font_height,$HOR_FILTER_3);
+    $gfx->stroke;
 
+    # Draw Goal Line
+    my $goal = &get_goal;
+    ( $x1, $y1 ) = &calculate_filter_plot_point (  $goal, $GOAL_START_TIME );
+    $gfx->move($x1,$y1);
+    ( $x2, $y2 ) = &calculate_filter_plot_point ( $goal, $MAX_TIME );
+    $gfx->line($x2,$y2);
+    my $text = $goal . '->';
+    my $fudge_left = -10;
+    my $fudge_up = 2;
+    $gfx->textlabel($LEGEND_LEFT+$fudge_left,$y1-$font_height/2+$fudge_up,$font,$font_height,$text);
+    $gfx->linedash(1,0);
+    $gfx->strokecolor('#0000FF');
     $gfx->stroke;
 }
 
@@ -238,7 +252,7 @@ sub draw_top_goal_line {
     my ( $x1, $y1 ) = &calculate_plot_point ( $goal_weight, $MAX_TIME );
     $gfx->line($x1,$y1);
     $gfx->linedash(1,0);
-    $gfx->strokecolor('#FF0000');
+    $gfx->strokecolor('#00FF00');
     $gfx->stroke;
     $gfx->textlabel($TOP_GOAL_TEXT_X_POINTS,$TOP_GOAL_TEXT_Y_POINTS,$font,$font_height,$TOP_GOAL_TEXT);
     $gfx->strokecolor('#000000');
@@ -249,21 +263,11 @@ sub get_goal {
     my $TOP_GOAL_WEIGHT=$config->get('TOP_GOAL_WEIGHT');
     my $TOP_GOAL_TIME=$config->get('TOP_GOAL_TIME');
     my $TOP_GOAL_CALORIES=$config->get('TOP_GOAL_CALORIES');
+    my $elapsed_days = ( $time  - $TOP_GOAL_TIME  ) / 86400;
 
-    # y = mx + b => 
-    
-    my ( $x, $y ) = &calculate_plot_point ( $TOP_GOAL_WEIGHT, $TOP_GOAL_TIME );
-    $gfx->move($x,$y);
-#    $gfx->linedash(2,4);
-    my $goal_weight = $TOP_GOAL_WEIGHT - ( $MAX_TIME - $TOP_GOAL_TIME ) * ( $TOP_GOAL_CALORIES / 3500 / 86400 );
-    my ( $x1, $y1 ) = &calculate_plot_point ( $goal_weight, $MAX_TIME );
-    $gfx->line($x1,$y1);
-    $gfx->linedash(1,0);
-    $gfx->strokecolor('#FF0000');
-    $gfx->stroke;
-    $gfx->textlabel($TOP_GOAL_TEXT_X_POINTS,$TOP_GOAL_TEXT_Y_POINTS,$font,$font_height,$TOP_GOAL_TEXT);
-    $gfx->strokecolor('#000000');
+    my $goal_weight = $TOP_GOAL_WEIGHT - ( $TOP_GOAL_CALORIES * $elapsed_days ) / 3500;
+    $goal_weight = sprintf( "%.2f", $goal_weight);
+    return $goal_weight;
 }
-
 
 exit;
