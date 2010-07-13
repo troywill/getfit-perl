@@ -42,7 +42,7 @@ my $font_height = 8;
 my $spacer = 2;
 
 # Circle Constants
-my $RADIUS = .25;
+my $RADIUS = .125;
 
 my $TEXT_LEFT = 40;
 my $TEXT_TOP = $VIEWPORT_BOTTOM - 18;
@@ -196,16 +196,14 @@ sub draw_top_goal_line {
 
     my ( $x, $y ) = &calculate_plot_point ( $TOP_GOAL_WEIGHT, $TOP_GOAL_TIME );
     $gfx->move($x,$y);
-    $gfx->linedash(2,4);
+#    $gfx->linedash(2,4);
+    $gfx->linedash(1,0);
     my $goal_weight = $TOP_GOAL_WEIGHT - ( $MAX_TIME - $TOP_GOAL_TIME ) * ( $TOP_GOAL_CALORIES / 3500 / 86400 );
     my ( $x1, $y1 ) = &calculate_plot_point ( $goal_weight, $MAX_TIME );
     $gfx->line($x1,$y1);
     $gfx->strokecolor('#FF0000');
     $gfx->stroke;
-
     $gfx->textlabel($TOP_GOAL_TEXT_X_POINTS,$TOP_GOAL_TEXT_Y_POINTS,$font,$font_height,$TOP_GOAL_TEXT);
-
-    
 }
 
 exit;
