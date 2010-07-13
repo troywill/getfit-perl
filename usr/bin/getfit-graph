@@ -42,7 +42,7 @@ my $font_height = 8;
 my $spacer = 2;
 
 # Circle Constants
-my $RADIUS = .5;
+my $RADIUS = .25;
 
 my $TEXT_LEFT = 40;
 my $TEXT_TOP = $VIEWPORT_BOTTOM - 18;
