@@ -16,6 +16,7 @@ my $config_graph = ConfigReader::Simple->new($graph_constants);
 my $initial_time = $config->get('START_TIME');
 my $OUTFILE = $config->get('OUTFILE');
 ########### Graph Constants
+my $GOAL_START_TIME = $config->get('GOAL_START_TIME');
 my $SCALE_DATA_FILE=$config->get('SCALE_DATA_FILE');
 my $MIN_WEIGHT=$config->get('GRAPH_MIN_WEIGHT');
 my $MAX_WEIGHT=$config->get('GRAPH_MAX_WEIGHT');
@@ -86,7 +87,15 @@ sub plot_filter_weights {
 	$gfx->line($x,$y);
 	$gfx->move($x,$y);
     }
+    # Draw Horizontal 1
+    my $HOR_FILTER_1=$config->get('HOR_FILTER_1');
+    my ( $x1, $y1 ) = &calculate_filter_plot_point (  $HOR_FILTER_1, $GOAL_START_TIME );
+    $gfx->move($x1,$y1);
+#    $gfx->linedash(1,5);
+    my ( $x2, $y2 ) = &calculate_filter_plot_point ( $HOR_FILTER_1, $MAX_TIME );
+    $gfx->line($x2,$y2);
     $gfx->stroke;
+#    $gfx->linedash(1,0);
 }
 
 sub calculate_filter_plot_point {
@@ -174,7 +183,6 @@ sub draw_rectangle {
 sub draw_goal_line {
     my $time = time;
     my $CALS_PER_DAY=$config->get('CALS_PER_DAY');
-    my $GOAL_START_TIME = $config->get('GOAL_START_TIME');
     my $GOAL_START_WEIGHT = $config->get('GOAL_START_WEIGHT');
     my ( $x1, $y1 ) = &calculate_plot_point (  $GOAL_START_WEIGHT, $GOAL_START_TIME );
     $gfx->move($x1,$y1);
