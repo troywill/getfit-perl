@@ -5,7 +5,6 @@ use DBI;
 use lib '/usr/lib/perl5';
 use Getfit::ConfigReader::Simple;
 
-
 my $config_file = shift or die "# e.g. /var/lib/getfit-troy/troy.conf: $!";
 my $config = ConfigReader::Simple->new($config_file);
 die "Could not read config! $ConfigReader::Simple::ERROR\n"
@@ -17,7 +16,7 @@ my $dbh =
   DBI->connect( "dbi:SQLite:$GETFIT_DATABASE", "", "",
     { RaiseError => 1, AutoCommit => 1 } );
 
-# &create_table_weight_readings($dbh);
+&create_table_weight_readings($dbh);
 &new_reading($dbh);
 
 sub new_reading {
@@ -41,4 +40,5 @@ sub create_table_weight_readings {
 	"CREATE TABLE weight_readings (id INTEGER PRIMARY KEY AUTOINCREMENT, unix_epoch integer UNIQUE, weight DECIMAL )"
 	);
     $dbh->do("INSERT INTO weight_readings VALUES (NULL,1263667739,179.0)");
+    $dbh->do("INSERT INTO weight_readings VALUES (NULL,1279230827,184.8)");
 }
