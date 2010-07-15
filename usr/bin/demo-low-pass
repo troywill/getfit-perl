@@ -7,7 +7,7 @@ use PDF::API3::Compat::API2;
 use PDF::API3::Compat::API2::Util;
 use Getfit::ConfigReader::Simple;
 use Getfit::Statistics;
-my $config_file = shift or die "# e.g. /var/lib/getfit-troy/troy.conf: $!";
+my $config_file = shift or die "# e.g. /var/lib/getfit-perl/demo-low-psss.conf: $!";
 my $graph_constants = '/var/lib/getfit-perl/graph_constants.conf';
 
 #################### Begin Config Section ##################
