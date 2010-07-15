@@ -14,7 +14,8 @@ my $graph_constants = '/var/lib/getfit-perl/graph_constants.conf';
 my $config = ConfigReader::Simple->new($config_file);
 my $config_graph = ConfigReader::Simple->new($graph_constants);
 my $initial_time = $config->get('START_TIME');
-my $OUTFILE = $config->get('OUTFILE');
+my $OUTFILE_DIR = $config->get('OUTFILE_DIR');
+my $OUTFILE_BASE = $config->get('OUTFILE_BASE');
 ########### Graph Constants
 my $LEGEND_LEFT = $config_graph->get('LEGEND_LEFT');
 my $GOAL_START_TIME = $config->get('GOAL_START_TIME');
@@ -75,7 +76,8 @@ my $FILTER_GRAPH_MIN_WEIGHT=$config->get('FILTER_GRAPH_MIN_WEIGHT');
 
 &draw_legend;
 
-$pdf->saveas($OUTFILE);
+my $outfile = $OUTFILE_DIR . '/' . $OUTFILE_BASE . '-' . time . '.pdf';
+$pdf->saveas($outfile);
 $pdf->end();
 
 ########## Begin: Filter sub routines ###########
