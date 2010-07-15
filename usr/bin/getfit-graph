@@ -45,7 +45,7 @@ my $font_height = 8;
 my $spacer = 2;
 
 # Circle Constants
-my $RADIUS = .5;
+my $RADIUS = .6;
 
 my $TEXT_LEFT = 40;
 my $TEXT_TOP = $VIEWPORT_BOTTOM - 18;
@@ -134,13 +134,19 @@ sub plot_filter_weights {
     $gfx->circle($x,$y,$RADIUS);
     $gfx->move($x,$y);
     while (<$OUT>) {
-	my ( $time, $weight ) = split;
-	my ( $x, $y ) = &calculate_filter_plot_point ( $weight, $time );
+	( $time, $weight ) = split;
+	( $x, $y ) = &calculate_filter_plot_point ( $weight, $time );
 	$gfx->line($x,$y);
 	$gfx->circle($x,$y,$RADIUS);
 	$gfx->move($x,$y);
     }
     $gfx->stroke;
+    # Text last weight
+    my $fudge_horizontal = 4;
+    my $fudge_vertical = 2;
+    my $text = '<-' . $weight;
+    $gfx->textlabel($x+$fudge_horizontal,$y-$font_height/2+$fudge_vertical,$font,$font_height,$text);
+    
 }
 
 sub calculate_filter_plot_point {
