@@ -2,4 +2,4 @@
 CONFIG_FILE='/var/lib/getfit-perl/demo-low-pass.conf
 getfit-new-reading ${CONFIG_FILE}
 getfit-will-filter ${CONFIG_FILE}
-getfit-graph ${CONFIG_FILE}
+demo-low-pass ${CONFIG_FILE}
