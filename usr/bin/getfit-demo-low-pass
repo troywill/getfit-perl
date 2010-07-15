@@ -1,5 +1,5 @@
 #!/bin/sh
-CONFIG_FILE='/var/lib/getfit-troy/troy.conf'
+CONFIG_FILE='/var/lib/getfit-perl/demo-low-pass.conf
 getfit-new-reading ${CONFIG_FILE}
 getfit-will-filter ${CONFIG_FILE}
 getfit-graph ${CONFIG_FILE}
