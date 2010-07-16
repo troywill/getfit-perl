@@ -45,8 +45,7 @@ my $font_height = 8;
 my $spacer = 2;
 
 # Circle Constants
-my $RADIUS = .6;
-my $RADIUS = 10;
+my $RADIUS = 1;
 
 my $TEXT_LEFT = 40;
 my $TEXT_TOP = $VIEWPORT_BOTTOM - 18;
@@ -64,18 +63,17 @@ my $FILTER_BOTTOM=$config->get('FILTER_BOTTOM');
 my $FILTER_GRAPH_MAX_WEIGHT=$config->get('FILTER_GRAPH_MAX_WEIGHT');
 my $FILTER_GRAPH_MIN_WEIGHT=$config->get('FILTER_GRAPH_MIN_WEIGHT');
 
-&get_goal;
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
 &plot_start_weight;
 &plot_weights;
 &draw_goal_line;
-&draw_top_goal_line;
+# &draw_top_goal_line;
 
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $FILTER_TOP, $FILTER_BOTTOM );
 &plot_filter_weights;
-&plot_filter_h_lines;
+# &plot_filter_h_lines;
 
-&draw_legend;
+# &draw_legend;
 
 my $outfile = $OUTFILE_DIR . '/' . $OUTFILE_BASE . '-' . time . '.pdf';
 $pdf->saveas($outfile);
@@ -203,6 +201,8 @@ sub scale {
 sub plot_start_weight {
     my ( $x, $y ) = &calculate_plot_point ( $START_WEIGHT, $START_TIME );
     $gfx->circle($x,$y,$RADIUS);
+    print "DEBUG: $gfx->circle($x,$y,$RADIUS)\n";
+    $gfx->stroke;
 }
 
 sub plot_weights {
