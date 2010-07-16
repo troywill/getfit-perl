@@ -27,7 +27,7 @@ sub new_reading {
 	exit;
     }
     my $time = time;
-    # &create_table_weight_readings($dbh, $time, $weight);     # For initial table creation only
+#    &create_table_weight_readings($dbh, $time, $weight);     # For initial table creation only
 
     $dbh->do("INSERT INTO weight_readings VALUES (NULL,$time,$weight)");
     open ( my $out, '>>', $FLAT_FILE ) or die "Unable to open $FLAT_FILE for appending: $!";
