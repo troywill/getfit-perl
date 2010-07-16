@@ -46,6 +46,7 @@ my $spacer = 2;
 
 # Circle Constants
 my $RADIUS = .6;
+my $RADIUS = 10;
 
 my $TEXT_LEFT = 40;
 my $TEXT_TOP = $VIEWPORT_BOTTOM - 18;
@@ -205,12 +206,14 @@ sub plot_start_weight {
 }
 
 sub plot_weights {
-    open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open data file: $!";
+    open( my $OUT, '<', $SCALE_DATA_FILE ) or die "Unable to open <$SCALE_DATA_FILE> data file: $!";
     $_ = <$OUT>;
     my ( $time, $weight ) = split();
     my ( $x, $y ) = &calculate_plot_point ( $weight, $time );
     $gfx->circle($x,$y,$RADIUS);
+    $gfx->circle($x,$y,25);
     $gfx->move($x,$y);
+    print "DEBUG \$gfx->move($x,$y);\n";
     while (<$OUT>) {
 	my ( $time, $weight ) = split;
 	( $x, $y ) = &calculate_plot_point ( $weight, $time );

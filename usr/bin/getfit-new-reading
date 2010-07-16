@@ -16,7 +16,6 @@ my $dbh =
   DBI->connect( "dbi:SQLite:$GETFIT_DATABASE", "", "",
     { RaiseError => 1, AutoCommit => 1 } );
 
-&create_table_weight_readings($dbh);
 &new_reading($dbh);
 
 sub new_reading {
@@ -28,6 +27,7 @@ sub new_reading {
 	exit;
     }
     my $time = time;
+#    &create_table_weight_readings($dbh, $time, $weight);
     $dbh->do("INSERT INTO weight_readings VALUES (NULL,$time,$weight)");
     open ( my $out, '>>', $FLAT_FILE ) or die "Unable to open $FLAT_FILE for appending: $!";
     print $out "$time $weight\n";
@@ -35,10 +35,9 @@ sub new_reading {
 }
 
 sub create_table_weight_readings {
-    my $dbh = shift;
+    my ( $dbh, $time, $weight )  = @_;
     $dbh->do(
 	"CREATE TABLE weight_readings (id INTEGER PRIMARY KEY AUTOINCREMENT, unix_epoch integer UNIQUE, weight DECIMAL )"
 	);
-    $dbh->do("INSERT INTO weight_readings VALUES (NULL,1263667739,179.0)");
-    $dbh->do("INSERT INTO weight_readings VALUES (NULL,1279230827,184.8)");
+    $dbh->do("INSERT INTO weight_readings VALUES (NULL,$time,$weight)");
 }
