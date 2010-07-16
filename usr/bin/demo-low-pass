@@ -31,6 +31,10 @@ my $MAX_TIME = $config->get('GRAPH_MAX_TIME');
 my $XMAX = $config_graph->get('XMAX');
 my $YMAX = $config_graph->get('YMAX');
 
+# For demo only
+$XMAX *= 2;
+$YMAX *= 2;
+
 my $SPACE_LEFT=$config_graph->get('SPACE_LEFT');
 my $SPACE_RIGHT=$config_graph->get('SPACE_RIGHT');
 my $SPACE_TOP=$config_graph->get('SPACE_TOP');
@@ -62,6 +66,13 @@ my $FILTER_TOP=$config->get('FILTER_TOP');
 my $FILTER_BOTTOM=$config->get('FILTER_BOTTOM');
 my $FILTER_GRAPH_MAX_WEIGHT=$config->get('FILTER_GRAPH_MAX_WEIGHT');
 my $FILTER_GRAPH_MIN_WEIGHT=$config->get('FILTER_GRAPH_MIN_WEIGHT');
+
+# Set filter graph parameters to raw data viewport paramters
+
+$FILTER_TOP=$VIEWPORT_TOP;
+$FILTER_BOTTOM=$VIEWPORT_BOTTOM;
+$FILTER_GRAPH_MAX_WEIGHT=$MAX_WEIGHT;
+$FILTER_GRAPH_MIN_WEIGHT=$MIN_WEIGHT;
 
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
 &plot_start_weight;
@@ -124,6 +135,7 @@ sub plot_filter_h_lines {
 
 sub plot_filter_weights {
     $gfx->linedash(1,0);
+    $gfx->strokecolor('#A020F0');
     my $FILTER_DATA_FILE = $config->get('FILTER_DATA_FILE');
     open( my $OUT, '<', $FILTER_DATA_FILE ) or die "Unable to open data file: $!";
     $_ = <$OUT>;
