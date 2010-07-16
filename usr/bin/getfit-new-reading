@@ -27,7 +27,7 @@ sub new_reading {
 	exit;
     }
     my $time = time;
-#    &create_table_weight_readings($dbh, $time, $weight);
+    &create_table_weight_readings($dbh, $time, $weight);
     $dbh->do("INSERT INTO weight_readings VALUES (NULL,$time,$weight)");
     open ( my $out, '>>', $FLAT_FILE ) or die "Unable to open $FLAT_FILE for appending: $!";
     print $out "$time $weight\n";
@@ -40,4 +40,5 @@ sub create_table_weight_readings {
 	"CREATE TABLE weight_readings (id INTEGER PRIMARY KEY AUTOINCREMENT, unix_epoch integer UNIQUE, weight DECIMAL )"
 	);
     $dbh->do("INSERT INTO weight_readings VALUES (NULL,$time,$weight)");
+    $time += 1;
 }
