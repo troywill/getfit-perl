@@ -75,10 +75,30 @@ my $FILTER_GRAPH_MIN_WEIGHT=$config->get('FILTER_GRAPH_MIN_WEIGHT');
 &plot_filter_h_lines;
 
 &draw_legend;
+&analysis;
 
 my $outfile = $OUTFILE_DIR . '/' . $OUTFILE_BASE . '-' . time . '.pdf';
 $pdf->saveas($outfile);
 $pdf->end();
+
+
+########## Analysis Subroutines ##########
+
+sub analysis {
+#    $gfx->textlabel($XMAX,$YMAX10 -(0*$font_height),$font,$font_height,'ANALYIS: Your');
+    my $goal = &get_goal;
+    my $text = "ANALYIS: Your low pass calculated weight of $XMAX is $YMAX less than your goal weight of $goal";
+    $gfx->textlabel($XMAX,$YMAX,$font,$font_height,$text);
+}
+
+sub get_filter_weight {
+    my $FILTER_DATA_FILE = $config->get('FILTER_DATA_FILE');
+    open( my $in, '<', $FILTER_DATA_FILE ) or die "Unable to open FILTER_DATA_FILE <$FILTER_DATA_FILE> for input: $!";
+    while (<$in>) {
+	my ( $filter_weight, $time ) = split $_;
+	print "DEBUG: $filter_weight\n";
+    }
+}
 
 ########## Begin: Filter sub routines ###########
 sub plot_filter_h_lines {

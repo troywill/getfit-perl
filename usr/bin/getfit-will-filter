@@ -29,7 +29,7 @@ sub print_weight_table {
 	$dbh->selectall_arrayref("SELECT * FROM weight_readings ORDER BY id");
     foreach my $row (@$weight_readings) {
         my ( $id, $epoch, $weight_reading ) = @$row;
-        print "\t$id\t$epoch\t$weight_reading\n";
+#        print "\t$id\t$epoch\t$weight_reading\n";
     }
 }
 
