@@ -12,8 +12,9 @@ die "Could not read config! $ConfigReader::Simple::ERROR\n"
 my $GETFIT_DATABASE = $config->get('GETFIT_DATABASE');
 my $FILTER_DATA_FILE = $config->get('FILTER_DATA_FILE');
 my $CALORIES_PER_DAY = $config->get('CALORIES_PER_DAY');
+my $MAX_GAIN_RATE = $config->get('MAX_GAIN_RATE');
 
-my $max_gain_rate  = ( ($CALORIES_PER_DAY/3500) / 24 / 60 / 60 );              #lbs per second
+my $max_gain_rate  = ( ($MAX_GAIN_RATE/3500) / 24 / 60 / 60 );              #lbs per second
 my $max_loss_rate  = ( ($CALORIES_PER_DAY/3500) / 24 / 60 / 60 );              #lbs per second
 
 my $dbh =
