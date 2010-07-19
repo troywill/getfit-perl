@@ -70,12 +70,22 @@ my $FILTER_GRAPH_MIN_WEIGHT=$config->get('FILTER_GRAPH_MIN_WEIGHT');
 &draw_goal_line;
 &draw_top_goal_line;
 
+
+#### Filter weight portal
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $FILTER_TOP, $FILTER_BOTTOM );
 &plot_filter_weights;
 &plot_filter_h_lines;
 
 &draw_legend;
 &analysis;
+
+my $jpeg = $pdf->image_jpeg('flower.jpeg');
+$gfx->image( $jpeg, $XMAX+50, $YMAX+50, 220, 201 );
+
+# my $photo = $page->gfx;
+#  103: die("Unable to find image file: $!") unless -e $picture;
+#  104: my $photo_file = $pdf->image_jpeg($picture);
+#  105: $photo->image( $photo_file, 54/mm, 66/mm, 41/mm, 55/mm );
 
 my $outfile = $OUTFILE_DIR . '/' . $OUTFILE_BASE . '-' . time . '.pdf';
 $pdf->saveas($outfile);
@@ -85,7 +95,7 @@ $pdf->end();
 ########## Analysis Subroutines ##########
 
 sub analysis {
-#    $gfx->textlabel($XMAX,$YMAX10 -(0*$font_height),$font,$font_height,'ANALYIS: Your');
+
     my $goal = &get_goal;
     my $text = "ANALYIS: Your low pass calculated weight of $XMAX is $YMAX less than your goal weight of $goal";
     $gfx->textlabel($XMAX,$YMAX,$font,$font_height,$text);
