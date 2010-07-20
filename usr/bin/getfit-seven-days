@@ -70,14 +70,16 @@ my $SEVEN_DAY_RAW_DATA_FILE = $config->get('SEVEN_DAY_RAW_DATA_FILE');
 ## Main ##
 my $now = time;
 my $start_time = $now - 86400 * 10;
+
 # &generate_segment_data_file( $SEVEN_DAY_START, $FILTER_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
 &generate_segment_data_file( $start_time, $FILTER_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
 # &plot_segment_weights( $SEVEN_DAY_RAW_DATA_FILE, $SEVEN_DAY_START, $MIN_WEIGHT );
 
 my ( $max_weight, $min_weight, $min_time, $max_time ) = &Getfit::Statistics::calculate_weight_range($SEVEN_DAY_RAW_DATA_FILE);
 print "( $max_weight, $min_weight, $min_time, $max_time\n";
-&plot_segment_weights( $SEVEN_DAY_RAW_DATA_FILE, $start_time, time, $min_weight-.05, $max_weight+.05 );
-&draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
+#&plot_segment_weights( $SEVEN_DAY_RAW_DATA_FILE, $start_time, time, $min_weight-.05, $max_weight+.05 );
+&Getfit::Statistics::plot_file( $SEVEN_DAY_RAW_DATA_FILE, 500, 50, 50, 500, $gfx );
+#&draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
 # &plot_start_weight;
 
 my $outfile = $OUTFILE_DIR . '/' . $OUTFILE_BASE . '-' . time . '.pdf';

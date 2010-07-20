@@ -56,12 +56,63 @@ my $priv_func = sub {
 
 ## YOUR CODE GOES HERE
 
+sub plot_file {
+    my ( $input_file, $top, $bottom, $left, $right, $gfx ) = @_;
+
+    # my ( $input_file, $start_time, $end_time, $min_weight, $max_weight ) = @_;
+    my ( $max_weight, $min_weight, $min_time, $max_time ) = &calculate_weight_range ( $input_file );
+    my ( $xscale, $yscale ) = &graph_scale ( $top, $bottom, $left, $right, $min_weight, $max_weight, $min_time, $max_time );
+
+    # Rect
+    $gfx->move($left,$top);
+    $gfx->line($right,$top);
+    $gfx->line($right,$bottom);
+    $gfx->line($left,$bottom);
+    $gfx->line($left,$top);
+    $gfx->stroke;
+    
+    open( my $IN, '<', $input_file ) or die "Unable to open data file: $!";
+    $_ = <$IN>;
+    my ( $time, $weight ) = split();
+    print "plot_file ==> ( $time, $weight )\n";
+    my ( $x, $y ) = &calculate_plot_point ( $weight, $time, $min_time, $min_weight, $xscale, $yscale, $left, $bottom );
+#    $gfx->circle($x,$y,$RADIUS);
+    $gfx->circle($x,$y,100);
+    $gfx->circle(100,100,100);
+    print"    $gfx->circle($x,$y,500);\n";
+    $gfx->move($x,$y);
+    $gfx->stroke;
+    close $IN;
+    
+}
+
+sub calculate_plot_point {
+    my ( $weight, $time, $MIN_TIME, $MIN_WEIGHT, $xscale, $yscale, $left, $bottom ) = @_;
+    my $x = $left + $xscale * ( $time - $MIN_TIME );
+    my $y = $bottom + $yscale * ( $weight - $MIN_WEIGHT );
+    return ( $x, $y );
+}
+
+
+
+sub plot_segment_weights {
+    # while (<$OUT>) {
+    # 	my ( $time, $weight ) = split;
+    # 	( $x, $y ) = &calculate_segment_plot_point ( $weight, $time, $start_time, $min_weight, $xscale, $yscale );
+    # 	$gfx->line($x,$y);
+    # 	$gfx->circle($x,$y,$RADIUS+1);
+    # 	$gfx->move($x,$y);
+    # }
+    # $gfx->circle($x,$y,2);
+    # $gfx->stroke;
+    # close $OUT;
+}
+
 sub graph_scale {
     my ( $VIEWPORT_TOP, $VIEWPORT_BOTTOM, $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $MIN_WEIGHT, $MAX_WEIGHT, $MIN_TIME, $MAX_TIME ) = @_;
     print "DL61: $VIEWPORT_TOP, $VIEWPORT_BOTTOM, $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $MIN_WEIGHT, $MAX_WEIGHT, $MIN_TIME, $MAX_TIME\n";
     my $points_per_pound =  ( $VIEWPORT_TOP - $VIEWPORT_BOTTOM ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
     my $points_per_second = ( $VIEWPORT_RIGHT - $VIEWPORT_LEFT ) / ( $MAX_TIME - $MIN_TIME );
-    sleep 5;
     return ( $points_per_second, $points_per_pound );
 }
 

@@ -79,10 +79,10 @@ my ( $max_weight, $min_weight, $min_time, $max_time ) = ( 0, 0, 0, 0 );
 &plot_filter_h_lines;
 
 &draw_legend;
-&analysis;
+# &analysis;
 
-my $jpeg = $pdf->image_jpeg('flower.jpeg');
-$gfx->image( $jpeg, $XMAX+50, $YMAX+50, 220, 201 );
+# my $jpeg = $pdf->image_jpeg('flower.jpeg');
+# $gfx->image( $jpeg, $XMAX+50, $YMAX+50, 220, 201 );
 
 # my $photo = $page->gfx;
 #  103: die("Unable to find image file: $!") unless -e $picture;
