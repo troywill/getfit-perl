@@ -1,4 +1,4 @@
-package Marv::Statistics;
+package Getfit::Statistics;
 
 use strict;
 use warnings;
