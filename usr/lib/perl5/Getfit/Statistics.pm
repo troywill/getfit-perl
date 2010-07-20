@@ -56,16 +56,6 @@ my $priv_func = sub {
 
 ## YOUR CODE GOES HERE
 
-use lib '/usr/lib/perl5';
-use Getfit::ConfigReader::Simple;
-
-my $config = ConfigReader::Simple->new('/var/lib/getfit-troy/troy.conf'); #FIXME
-my $initial_time = $config->get('START_TIME');
-my $initial_weight = $config->get('START_WEIGHT');
-my $loss_rate = $config->get('INITIAL_LOSS_RATE');
-my $SCALE_DATA_FILE = $config->get('SCALE_DATA_FILE');
-$Current_goal = &get_current_goal;
-( $min_weight, $max_weight, $min_time, $max_time ) = &calculate_weight_range;
 sub get_current_goal {
     my $time_diff = time - $initial_time;
     my $current_goal = $initial_weight - ($time_diff/86400) * ($loss_rate/3500);
