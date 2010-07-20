@@ -13,7 +13,7 @@ BEGIN {
     $VERSION = sprintf "%d.%03d", q$Revision: 1.1 $ =~ /(\d+)/g;
 
     @ISA         = qw(Exporter);
-    @EXPORT      = qw(&elapsed_time &func2 &func4);
+    @EXPORT      = qw(&elapsed_time &func2 &func4 &graph_scale);
     %EXPORT_TAGS = ( );     # eg: TAG => [ qw!name1 name2! ],
 
     # your exported package globals go here,
@@ -56,6 +56,15 @@ my $priv_func = sub {
 
 ## YOUR CODE GOES HERE
 
+sub graph_scale {
+    my ( $VIEWPORT_TOP, $VIEWPORT_BOTTOM, $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $MIN_WEIGHT, $MAX_WEIGHT, $MIN_TIME, $MAX_TIME ) = @_;
+    print "DL61: $VIEWPORT_TOP, $VIEWPORT_BOTTOM, $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $MIN_WEIGHT, $MAX_WEIGHT, $MIN_TIME, $MAX_TIME\n";
+    my $points_per_pound =  ( $VIEWPORT_TOP - $VIEWPORT_BOTTOM ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
+    my $points_per_second = ( $VIEWPORT_RIGHT - $VIEWPORT_LEFT ) / ( $MAX_TIME - $MIN_TIME );
+    sleep 5;
+    return ( $points_per_second, $points_per_pound );
+}
+
 sub get_current_goal {
     my ( $initial_time, $initial_weight, $loss_rate )  = @_;
     my $time_diff = time - $initial_time;
@@ -74,7 +83,7 @@ sub calculate_weight_range {
     my $max_weight = 0;
     my $min_weight = 1000;
     my $max_time = 0;
-    my $min_time = 1000000000;
+    my $min_time = 10000000000;
     while (<$in>) {
 	my ( $time, $weight ) = split;
 	$max_weight = $weight if ( $weight > $max_weight );

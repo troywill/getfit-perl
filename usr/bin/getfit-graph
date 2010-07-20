@@ -63,13 +63,15 @@ my $FILTER_BOTTOM=$config->get('FILTER_BOTTOM');
 my $FILTER_GRAPH_MAX_WEIGHT=$config->get('FILTER_GRAPH_MAX_WEIGHT');
 my $FILTER_GRAPH_MIN_WEIGHT=$config->get('FILTER_GRAPH_MIN_WEIGHT');
 
+my ( $max_weight, $min_weight, $min_time, $max_time ) = ( 0, 0, 0, 0 );
+( $max_weight, $min_weight, $min_time, $max_time ) = &Getfit::Statistics::calculate_weight_range($SCALE_DATA_FILE);
+
 &get_goal;
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
 &plot_start_weight;
 &plot_weights;
 &draw_goal_line;
 &draw_top_goal_line;
-
 
 #### Filter weight portal
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $FILTER_TOP, $FILTER_BOTTOM );

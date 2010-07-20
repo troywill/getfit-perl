@@ -69,11 +69,14 @@ my $SEVEN_DAY_RAW_DATA_FILE = $config->get('SEVEN_DAY_RAW_DATA_FILE');
 
 ## Main ##
 my $now = time;
-my $start_time = $now - 86400 * 7;
+my $start_time = $now - 86400 * 10;
 # &generate_segment_data_file( $SEVEN_DAY_START, $FILTER_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
 &generate_segment_data_file( $start_time, $FILTER_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
 # &plot_segment_weights( $SEVEN_DAY_RAW_DATA_FILE, $SEVEN_DAY_START, $MIN_WEIGHT );
-&plot_segment_weights( $SEVEN_DAY_RAW_DATA_FILE, $start_time, $MIN_WEIGHT );
+
+my ( $max_weight, $min_weight, $min_time, $max_time ) = &Getfit::Statistics::calculate_weight_range($SEVEN_DAY_RAW_DATA_FILE);
+print "( $max_weight, $min_weight, $min_time, $max_time\n";
+&plot_segment_weights( $SEVEN_DAY_RAW_DATA_FILE, $start_time, time, $min_weight-.05, $max_weight+.05 );
 &draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
 # &plot_start_weight;
 
@@ -84,18 +87,21 @@ $pdf->end();
 exit;
 
 sub plot_segment_weights {
-    my ( $input_file, $start_time, $min_weight ) = @_;
+    my ( $input_file, $start_time, $end_time, $min_weight, $max_weight ) = @_;
+    $MAX_TIME = time;
+    my ( $xscale, $yscale ) = &graph_scale( $VIEWPORT_TOP, $VIEWPORT_BOTTOM, $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $min_weight, $max_weight, $min_time, $MAX_TIME );
+    print "DEBUG: $xscale\t$yscale\n";
     open( my $OUT, '<', $input_file ) or die "Unable to open data file: $!";
     $_ = <$OUT>;
     my ( $time, $weight ) = split();
-    my ( $x, $y ) = &calculate_segment_plot_point ( $weight, $time, $start_time, $min_weight );
+    my ( $x, $y ) = &calculate_segment_plot_point ( $weight, $time, $start_time, $min_weight, $xscale, $yscale );
     $gfx->circle($x,$y,$RADIUS);
     $gfx->move($x,$y);
     while (<$OUT>) {
 	my ( $time, $weight ) = split;
-	( $x, $y ) = &calculate_segment_plot_point ( $weight, $time, $start_time, $min_weight );
+	( $x, $y ) = &calculate_segment_plot_point ( $weight, $time, $start_time, $min_weight, $xscale, $yscale );
 	$gfx->line($x,$y);
-	$gfx->circle($x,$y,$RADIUS);
+	$gfx->circle($x,$y,$RADIUS+1);
 	$gfx->move($x,$y);
     }
     $gfx->circle($x,$y,2);
@@ -104,13 +110,9 @@ sub plot_segment_weights {
 }
 
 sub calculate_segment_plot_point {
-    my ( $weight, $time, $MIN_TIME, $MIN_WEIGHT ) = @_;
-    my ( $xscale, $yscale ) = &scale( $VIEWPORT_TOP, $VIEWPORT_BOTTOM, $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $MIN_WEIGHT, $MAX_WEIGHT, $MIN_TIME, $MAX_TIME );
-    print "$MIN_WEIGHT, $MAX_WEIGHT\n";
-    $MAX_WEIGHT = 184;
-    $MIN_WEIGHT = 182.8;
-    ( $xscale, $yscale ) = &scale( $VIEWPORT_TOP, $VIEWPORT_BOTTOM, $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $MIN_WEIGHT, $MAX_WEIGHT, $MIN_TIME, $now);
+    my ( $weight, $time, $MIN_TIME, $MIN_WEIGHT, $xscale, $yscale ) = @_;
     my $x = $VIEWPORT_LEFT + $xscale * ( $time - $MIN_TIME );
+    print "DEBUG L116: my $x = $VIEWPORT_LEFT + $xscale * ( $time - $MIN_TIME );\n";
     my $y = $VIEWPORT_BOTTOM + $yscale * ( $weight - $MIN_WEIGHT );
     return ( $x, $y );
 }
@@ -139,11 +141,7 @@ sub generate_segment_data_file {
 sub calculate_transition {
     my ( $t0, $w0, $t2, $w2, $t1 ) = @_;
     print "=> ( $t0, $w0, $t2, $w2, $t1 )\n";
-    my $delta_time_full = $t2 - $t0;
-    my $delta_time_begin = $t2 - $t1;
-    my $percent = ( $delta_time_begin ) / ( $delta_time_full );
-    my $delta_weight = $w0 - $w2;
-    my $w1 = $w0 + $delta_weight * $percent;
+    my $w1 = $w0 + ( $w2 - $w0 ) * ( $t1 - $t0 ) / ( $t2 - $t0 );
     return ( $t1, $w1 );
 }
 
@@ -234,13 +232,6 @@ sub filter_scale {
 }
 
 ########## End: Filter sub routines ###########
-
-sub scale {
-    my ( $VIEWPORT_TOP, $VIEWPORT_BOTTOM, $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $MIN_WEIGHT, $MAX_WEIGHT, $MIN_TIME, $MAX_TIME ) = @_;
-    my $points_per_pound =  ( $VIEWPORT_TOP - $VIEWPORT_BOTTOM ) / ( $MAX_WEIGHT - $MIN_WEIGHT );
-    my $points_per_second = ( $VIEWPORT_RIGHT - $VIEWPORT_LEFT ) / ( $MAX_TIME - $MIN_TIME );
-    return ( $points_per_second, $points_per_pound );
-}
 
 sub plot_start_weight {
     my ( $x, $y ) = &calculate_plot_point ( $START_WEIGHT, $START_TIME );
