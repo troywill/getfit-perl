@@ -57,16 +57,19 @@ my $priv_func = sub {
 ## YOUR CODE GOES HERE
 
 sub get_current_goal {
+    my ( $initial_time, $initial_weight, $loss_rate )  = @_;
     my $time_diff = time - $initial_time;
     my $current_goal = $initial_weight - ($time_diff/86400) * ($loss_rate/3500);
     return $current_goal;
 }
 
 sub elapsed_time {
+    my $initial_time = shift;
     my $elapsed_time = time - $initial_time;
 }
 
 sub calculate_weight_range {
+    my $SCALE_DATA_FILE = shift;
     open( my $in, '<', $SCALE_DATA_FILE ) or warn "Not able to open $SCALE_DATA_FILE: $!";
     my $max_weight = 0;
     my $min_weight = 1000;
