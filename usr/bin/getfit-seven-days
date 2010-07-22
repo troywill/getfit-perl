@@ -97,7 +97,7 @@ sub goal_weight {
     my ( $t, $t0, $w0, $rate ) = @_;
     $rate = $rate / 3500 / 86400;
     my $goal_weight = $w0 - * $rate * ( $t - $t0 ); 
-    return ( $weight );
+    return ( $goal_weight );
 }
 
 my ( $px1, $py1 ) = &Getfit::Statistics::calculate_plot_point( $w1, $min_time, $min_weight, $min_time, 50, 50, $xscale, $yscale);
