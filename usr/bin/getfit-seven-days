@@ -95,7 +95,8 @@ my $w2 = &goal_weight( $max_time, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CA
 
 sub goal_weight {
     my ( $t, $t0, $w0, $rate ) = @_;
-    my $goal_weight = $w0 - ( $MAX_TIME - $GOAL_START_TIME ) * ( $CALS_PER_DAY / 3500 / 86400 );
+    $rate = $rate / 3500 / 86400;
+    my $goal_weight = $w0 - * $rate * ( $t - $t0 ); 
     return ( $weight );
 }
 
