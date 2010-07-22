@@ -90,19 +90,20 @@ sub plot_file {
     close $IN;
 }
 
-sub plot_file_with_params {
-    my ( $input_file, $top, $bottom, $left, $right, $gfx ) = @_;
+sub plot_file_with_goal_line {
+    my ( $input_file, $left, $bottom, $width, $height, $gfx, $TOP_GOAL_CALORIES,$TOP_GOAL_TIME,$TOP_GOAL_WEIGHT ) = @_;
 
-    # my ( $input_file, $start_time, $end_time, $min_weight, $max_weight ) = @_;
-    my ( $max_weight, $min_weight, $min_time, $max_time ) = &calculate_weight_range ( $input_file );
-    my ( $xscale, $yscale ) = &graph_scale ( $top, $bottom, $left, $right, $min_weight, $max_weight, $min_time, $max_time );
+    my ( $max_weight, $min_weight, $min_time_ignore, $max_time_ignore ) = &calculate_weight_range ( $input_file );
+    my ( $xscale, $yscale ) = &graph_scale ( $width, $height, $min_weight, $max_weight, $min_time, $max_time );
 
-    # Rect
-    $gfx->move($left,$top);
+    my $top = $bottom + $height;
+    my $right = $left + $width;
+    
+    $gfx->move($left,$bottom);
+    $gfx->line($left,$top);
     $gfx->line($right,$top);
     $gfx->line($right,$bottom);
     $gfx->line($left,$bottom);
-    $gfx->line($left,$top);
     $gfx->stroke;
     
     open( my $IN, '<', $input_file ) or die "Unable to open data file: $!";
@@ -121,6 +122,21 @@ sub plot_file_with_params {
     $gfx->circle($x,$y,2);
     $gfx->stroke;
     close $IN;
+
+
+    # Plot goal line
+    my $rate = ( $TOP_GOAL_CALORIES / 3500 / 86400 );
+    my ( $xscale, $yscale ) = &Getfit::Statistics::graph_scale( $view_width, $view_height, $min_weight, $max_weight, $min_time, $max_time );
+
+# $w1, $w2: Goal weight at $min_time, $max_time
+    my $w1 = &Getfit::Statistics::goal_weight( $min_time, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES );
+    my $w2 = &Getfit::Statistics::goal_weight( $max_time, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES );
+
+    my ( $px1, $py1 ) = &Getfit::Statistics::calculate_plot_point( $w1, $min_time, $min_weight, $min_time, 50, 50, $xscale, $yscale);
+    my ( $px2, $py2 ) = &Getfit::Statistics::calculate_plot_point( $w2, $max_time, $min_weight, $min_time, 50, 50, $xscale, $yscale);
+    $gfx->move($px1,$py1);
+    $gfx->line($px2,$py2);
+    $gfx->stroke;
 }
 
 sub calculate_plot_point {
@@ -168,6 +184,14 @@ sub calculate_weight_range {
     }
     return ( $max_weight, $min_weight, $min_time, $max_time );
 }
+
+sub goal_weight {
+    my ( $t, $t0, $w0, $rate ) = @_;
+    $rate = $rate / 3500 / 86400;
+    my $goal_weight = $w0 - $rate * ( $t - $t0 ); 
+    return ( $goal_weight );
+}
+
 
 sub time_since_last_reading {
     

@@ -86,25 +86,9 @@ my $TOP_GOAL_TIME = $config->get('TOP_GOAL_TIME');
 my $TOP_GOAL_CALORIES = $config->get('TOP_GOAL_CALORIES');
 my $TOP_GOAL_WEIGHT = $config->get('TOP_GOAL_WEIGHT');
 
-my $rate = ( $TOP_GOAL_CALORIES / 3500 / 86400 );
-my ( $xscale, $yscale ) = &Getfit::Statistics::graph_scale( $view_width, $view_height, $min_weight, $max_weight, $min_time, $max_time );
+&Getfit::Statistics::plot_file_with_goal_line( $SEVEN_DAY_RAW_DATA_FILE, 50, 50, $view_width,
+					       $view_height, $gfx, $TOP_GOAL_CALORIES,$TOP_GOAL_TIME, $TOP_GOAL_WEIGHT);
 
-# $w1, $w2: Goal weight at $min_time, $max_time
-my $w1 = &goal_weight( $min_time, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES );
-my $w2 = &goal_weight( $max_time, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES );
-
-sub goal_weight {
-    my ( $t, $t0, $w0, $rate ) = @_;
-    $rate = $rate / 3500 / 86400;
-    my $goal_weight = $w0 - $rate * ( $t - $t0 ); 
-    return ( $goal_weight );
-}
-
-my ( $px1, $py1 ) = &Getfit::Statistics::calculate_plot_point( $w1, $min_time, $min_weight, $min_time, 50, 50, $xscale, $yscale);
-my ( $px2, $py2 ) = &Getfit::Statistics::calculate_plot_point( $w2, $max_time, $min_weight, $min_time, 50, 50, $xscale, $yscale);
-$gfx->move($px1,$py1);
-$gfx->line($px2,$py2);
-$gfx->stroke;
 
 $gfx->textlabel(60,90,$font,$font_height,$TOP_GOAL_CALORIES);
 $gfx->textlabel(60,80,$font,$font_height,$string);
