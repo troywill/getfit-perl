@@ -47,9 +47,9 @@ sub get_initial_value {
 
 sub run_will_filter {
     my $dbh                = shift;
-    my $old_time           = 0;
     my $time_diff          = 0;
     my ( $id, $epoch, $weight_reading ) = &get_initial_value($dbh);
+    my $old_time           = $epoch;
     my $old_weight_reading = $weight_reading;
     my $filter_weight      = $weight_reading;
     my $min_weight         = $weight_reading;
@@ -60,21 +60,20 @@ sub run_will_filter {
     my $weight_readings =
 	$dbh->selectall_arrayref("SELECT * FROM weight_readings ORDER BY id");
     foreach my $row (@$weight_readings) {
-        $old_time           = $epoch;
-        $old_weight_reading = $filter_weight;
         ( my $id, $epoch, my $weight_reading ) = @$row;
         $time_diff  = ( $epoch - $old_time );
         $max_weight = $old_weight_reading + $max_gain_rate * $time_diff;
         $min_weight = $old_weight_reading - $max_loss_rate * $time_diff;
         if ( $weight_reading > $max_weight ) {
-            $filter_weight = $max_weight;
+	  $filter_weight = $max_weight;
+	} elsif ( $weight_reading < $min_weight ) {
+	  $filter_weight = $min_weight;
+        } else {
+	  $filter_weight = $weight_reading;
         }
-        elsif ( $weight_reading < $min_weight ) {
-            $filter_weight = $min_weight;
-        }
-        else {
-            $filter_weight = $weight_reading;
-        }
+	$old_time           = $epoch;
+        $old_weight_reading = $filter_weight;
+	print "\t$weight_reading\t$filter_weight\t", $weight_reading - $filter_weight, "\n";
 
         #print "Epoch: $epoch\nOld time: $old_time\nDiff: $time_diff\n----\n";
 	printf $out ("%d %.3f\n", $epoch, $filter_weight);

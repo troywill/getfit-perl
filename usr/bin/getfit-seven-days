@@ -7,7 +7,9 @@ use PDF::API3::Compat::API2;
 use PDF::API3::Compat::API2::Util;
 use Getfit::ConfigReader::Simple;
 use Getfit::Statistics;
-my $config_file = shift or die "# e.g. /var/lib/getfit-troy/troy.conf: $!";
+my $config_file = $ARGV[0] or die "# e.g. /var/lib/getfit-troy/troy.conf: $!";
+my $days = $ARGV[1] or die "Please supply number of days";
+
 my $graph_constants = '/var/lib/getfit-perl/graph_constants.conf';
 
 #################### Begin Config Section ##################
@@ -19,6 +21,7 @@ my $OUTFILE_BASE = $config->get('OUTFILE_BASE');
 ########### Graph Constants
 my $LEGEND_LEFT = $config_graph->get('LEGEND_LEFT');
 my $GOAL_START_TIME = $config->get('GOAL_START_TIME');
+my $GOAL_START_WEIGHT = $config->get('GOAL_START_WEIGHT');
 my $SCALE_DATA_FILE=$config->get('SCALE_DATA_FILE');
 my $MIN_WEIGHT=$config->get('GRAPH_MIN_WEIGHT');
 my $MAX_WEIGHT=$config->get('GRAPH_MAX_WEIGHT');
@@ -69,18 +72,43 @@ my $SEVEN_DAY_RAW_DATA_FILE = $config->get('SEVEN_DAY_RAW_DATA_FILE');
 
 ## Main ##
 my $now = time;
-my $start_time = $now - 86400 * 10;
+my $start_time = $now - 86400 * $days;
 
-# &generate_segment_data_file( $SEVEN_DAY_START, $FILTER_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
 &generate_segment_data_file( $start_time, $FILTER_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
-# &plot_segment_weights( $SEVEN_DAY_RAW_DATA_FILE, $SEVEN_DAY_START, $MIN_WEIGHT );
-
 my ( $max_weight, $min_weight, $min_time, $max_time ) = &Getfit::Statistics::calculate_weight_range($SEVEN_DAY_RAW_DATA_FILE);
-print "( $max_weight, $min_weight, $min_time, $max_time\n";
-#&plot_segment_weights( $SEVEN_DAY_RAW_DATA_FILE, $start_time, time, $min_weight-.05, $max_weight+.05 );
-&Getfit::Statistics::plot_file( $SEVEN_DAY_RAW_DATA_FILE, 500, 50, 50, 500, $gfx );
-#&draw_rectangle( $VIEWPORT_LEFT, $VIEWPORT_RIGHT, $VIEWPORT_TOP, $VIEWPORT_BOTTOM );
-# &plot_start_weight;
+my $string = " Max/min( $max_weight, $min_weight, $min_time, $max_time )";
+my $view_width = 792-50-50;
+my $view_height = 612-50-50;
+&Getfit::Statistics::plot_file( $SEVEN_DAY_RAW_DATA_FILE, 50, 50, $view_width, $view_height, $gfx );
+
+# Plot Goal Line
+my $TOP_GOAL_TIME = $config->get('TOP_GOAL_TIME');
+my $TOP_GOAL_CALORIES = $config->get('TOP_GOAL_CALORIES');
+my $TOP_GOAL_WEIGHT = $config->get('TOP_GOAL_WEIGHT');
+
+my $rate = ( $TOP_GOAL_CALORIES / 3500 / 86400 );
+my ( $xscale, $yscale ) = &Getfit::Statistics::graph_scale( $view_width, $view_height, $min_weight, $max_weight, $min_time, $max_time );
+
+# $w1, $w2: Goal weight at $min_time, $max_time
+my $w1 = &goal_weight( $min_time, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES );
+my $w2 = &goal_weight( $max_time, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES );
+
+sub goal_weight {
+    my ( $t, $t0, $w0, $rate ) = @_;
+    my $goal_weight = $w0 - ( $MAX_TIME - $GOAL_START_TIME ) * ( $CALS_PER_DAY / 3500 / 86400 );
+    return ( $weight );
+}
+
+my ( $px1, $py1 ) = &Getfit::Statistics::calculate_plot_point( $w1, $min_time, $min_weight, $min_time, 50, 50, $xscale, $yscale);
+my ( $px2, $py2 ) = &Getfit::Statistics::calculate_plot_point( $w2, $max_time, $min_weight, $min_time, 50, 50, $xscale, $yscale);
+$gfx->move($px1,$py1);
+$gfx->line($px2,$py2);
+$gfx->stroke;
+
+$gfx->textlabel(60,90,$font,$font_height,$TOP_GOAL_CALORIES);
+$gfx->textlabel(60,80,$font,$font_height,$string);
+$gfx->textlabel(60,70,$font,$font_height,$max_weight);
+$gfx->textlabel(60,60,$font,$font_height,$min_weight);
 
 my $outfile = $OUTFILE_DIR . '/' . $OUTFILE_BASE . '-' . time . '.pdf';
 $pdf->saveas($outfile);
