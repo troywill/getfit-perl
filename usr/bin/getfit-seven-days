@@ -79,7 +79,7 @@ my ( $max_weight, $min_weight, $min_time, $max_time ) = &Getfit::Statistics::cal
 my $string = " Max/min( $max_weight, $min_weight, $min_time, $max_time )";
 my $view_width = 792-50-50;
 my $view_height = 612-50-50;
-&Getfit::Statistics::plot_file( $SEVEN_DAY_RAW_DATA_FILE, 50, 50, $view_width, $view_height, $gfx );
+# &Getfit::Statistics::plot_file( $SEVEN_DAY_RAW_DATA_FILE, 50, 50, $view_width, $view_height, $gfx );
 
 # Plot Goal Line
 my $TOP_GOAL_TIME = $config->get('TOP_GOAL_TIME');

@@ -171,8 +171,6 @@ sub plot_file_with_goal_line {
 
 sub goal_weight {
     my ( $t, $t0, $w0, $rate ) = @_;
-    print "DEBUG: L174: ( $t, $t0, $w0, $rate )<==========\n";
-    sleep 10;
     $rate = $rate / 3500 / 86400;
     my $goal_weight = $w0 - $rate * ( $t - $t0 );
     return ($goal_weight);
