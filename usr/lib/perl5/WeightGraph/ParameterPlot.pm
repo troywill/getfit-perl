@@ -169,13 +169,6 @@ sub plot_file_with_goal_line {
     $gfx->stroke;
 }
 
-sub goal_weight {
-    my ( $t, $t0, $w0, $rate ) = @_;
-    $rate = $rate / 3500 / 86400;
-    my $goal_weight = $w0 - $rate * ( $t - $t0 );
-    return ($goal_weight);
-}
-
 sub calculate_plot_point {
     my ( $weight, $time, $weight_min, $time_min, $left, $bottom, $xscale,
         $yscale )
@@ -183,9 +176,6 @@ sub calculate_plot_point {
     my $x = $left + $xscale *   ( $time - $time_min );
     my $y = $bottom + $yscale * ( $weight - $weight_min );
     return ( $x, $y );
-}
-
-sub plot_segment_weights {
 }
 
 sub graph_scale {
@@ -196,19 +186,6 @@ sub graph_scale {
     my $points_per_second = ($view_width) /  ( $time_max - $time_min );
     my $points_per_pound  = ($view_height) / ( $weight_max - $weight_min );
     return ( $points_per_second, $points_per_pound );
-}
-
-sub get_current_goal {
-    my ( $initial_time, $initial_weight, $loss_rate ) = @_;
-    my $time_diff = time - $initial_time;
-    my $current_goal =
-      $initial_weight - ( $time_diff / 86400 ) * ( $loss_rate / 3500 );
-    return $current_goal;
-}
-
-sub elapsed_time {
-    my $initial_time = shift;
-    my $elapsed_time = time - $initial_time;
 }
 
 sub calculate_weight_range {
@@ -228,16 +205,6 @@ sub calculate_weight_range {
     }
     return ( $max_weight, $min_weight, $min_time, $max_time );
 }
-
-sub time_since_last_reading {
-
-}
-
-sub func2()   { }    # proto'd void
-sub func3($$) { }    # proto'd to 2 scalars
-
-# this one isn't exported, but could be called!
-sub func4(\%) { }    # proto'd to 1 hash ref
 
 END { }              # module clean-up code here (global destructor)
 
