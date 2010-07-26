@@ -14,13 +14,13 @@ BEGIN {
     $VERSION = sprintf "%d.%03d", q$Revision: 1.1 $ =~ /(\d+)/g;
 
     @ISA    = qw(Exporter);
-    @EXPORT = qw(&elapsed_time &func2 &func4 &graph_scale);
+    @EXPORT = qw(&get_current_goal &get_current_goal_from_config &elapsed_time &graph_scale);
     %EXPORT_TAGS = ();    # eg: TAG => [ qw!name1 name2! ],
 
     # your exported package globals go here,
     # as well as any optionally exported functions
     @EXPORT_OK =
-      qw(&get_current_goal $Current_goal $max_weight $min_weight $min_time $max_time $%Hashit &func3);
+      qw(&get_current_goal &get_current_goal_from_config $Current_goal $max_weight $min_weight $min_time $max_time);
 }
 our @EXPORT_OK;
 
@@ -68,6 +68,20 @@ sub goal_weight {
 
 sub get_current_goal {
     my ( $initial_time, $initial_weight, $loss_rate ) = @_;
+    my $time_diff = time - $initial_time;
+    my $current_goal =
+      $initial_weight - ( $time_diff / 86400 ) * ( $loss_rate / 3500 );
+    return $current_goal;
+}
+
+sub get_current_goal_from_config {
+    my $config_file = shift or die "Please supply a configuration file";
+    my $config = ConfigReader::Simple->new($config_file);
+    
+    my $initial_time = $config->get('START_TIME');
+    my $initial_weight = $config->get('START_WEIGHT');
+    my $loss_rate = $config->get('INITIAL_LOSS_RATE');
+
     my $time_diff = time - $initial_time;
     my $current_goal =
       $initial_weight - ( $time_diff / 86400 ) * ( $loss_rate / 3500 );
