@@ -1,4 +1,4 @@
-package Getfit::Statistics;
+package WeightGraph::Statistics;
 
 use strict;
 use warnings;
@@ -20,7 +20,7 @@ BEGIN {
     # your exported package globals go here,
     # as well as any optionally exported functions
     @EXPORT_OK =
-      qw($Current_goal $max_weight $min_weight $min_time $max_time $%Hashit &func3);
+      qw(&get_current_goal $Current_goal $max_weight $min_weight $min_time $max_time $%Hashit &func3);
 }
 our @EXPORT_OK;
 

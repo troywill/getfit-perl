@@ -1,4 +1,4 @@
-package Getfit::Statistics;
+package ParameterPlot::Statistics;
 
 use strict;
 use warnings;
