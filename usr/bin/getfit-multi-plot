@@ -11,7 +11,6 @@ use WeightGraph::Statistics;
 use WeightGraph::ParameterPlot;
 
 my $config_file = $ARGV[0] or die "# e.g. /var/lib/getfit-troy/troy.conf: $!";
-
 my $graph_constants = '/var/lib/getfit-perl/graph_constants.conf';
 
 #################### Begin Config Section ##################
@@ -50,7 +49,7 @@ my $font_height = 8;
 my $spacer = 2;
 
 # Circle Constants
-my $RADIUS = .6;
+my $RADIUS = .0;
 
 my $TEXT_LEFT = 40;
 my $TEXT_TOP = $VIEWPORT_BOTTOM - 18;
@@ -86,22 +85,24 @@ my $TOP_GOAL_WEIGHT = $config->get('TOP_GOAL_WEIGHT');
 
 use Getfit::Statistics;
 
-$gfx->strokecolor('#0000FF');
-&WeightGraph::ParameterPlot::plot_file_with_range( '/stow/getfit-perl/var/lib/getfit-troy/plus250.dat', 50, 50, $view_width,
-					       $view_height, $gfx, $min_weight-2, $max_weight+2 );
-
-$gfx->strokecolor('#00FF00');
-&WeightGraph::ParameterPlot::plot_file_with_range( '/stow/getfit-perl/var/lib/getfit-troy/minus250.pdf', 50, 50, $view_width,
-					       $view_height, $gfx, $min_weight-2, $max_weight+2 );
-
+# Draw Top Graph
 $gfx->strokecolor('#000000');
-&WeightGraph::ParameterPlot::plot_file_with_range( $SCALE_DATA_FILE, 50, 50, $view_width,
-					       $view_height, $gfx, $min_weight-2, $max_weight+2 );
-
+&WeightGraph::ParameterPlot::plot_file_with_range( $SCALE_DATA_FILE, 50, 50 + $view_height/2, $view_width,
+					       $view_height/2, $gfx, $min_weight-.25, $max_weight+.25 );
+# Draw Top Graph
+$gfx->strokecolor('#000000');
+&WeightGraph::ParameterPlot::plot_file_with_range( $SCALE_DATA_FILE, 50, 50 + $view_height/2, $view_width,
+					       $view_height/2, $gfx, $min_weight-.25, $max_weight+.25 );
+# Draw Lower Left Graph
+$gfx->strokecolor('#000000');
+&WeightGraph::ParameterPlot::plot_file_with_range( $SCALE_DATA_FILE, 50, 50, $view_width/2,
+					       $view_height/2-25, $gfx, $min_weight-.25, $max_weight+.25 );
+# Draw Lower Right Graph
+$gfx->strokecolor('#000000');
+# &WeightGraph::ParameterPlot::plot_file_with_range( $SCALE_DATA_FILE, 50 + $view_width/2, 50 + $view_height/2, $view_width/2,
+# 					       $view_height/2, $gfx, $min_weight-.25, $max_weight+.25 );
 
 print "DEBUG: $SCALE_DATA_FILE <==\n";
-
-
 $gfx->textlabel(60,90,$font,$font_height,$TOP_GOAL_CALORIES);
 $gfx->textlabel(60,80,$font,$font_height,$string);
 $gfx->textlabel(60,70,$font,$font_height,$max_weight);

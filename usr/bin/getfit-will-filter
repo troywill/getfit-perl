@@ -73,9 +73,6 @@ sub run_will_filter {
         }
 	$old_time           = $epoch;
         $old_weight_reading = $filter_weight;
-	print "\t$weight_reading\t$filter_weight\t", $weight_reading - $filter_weight, "\n";
-
-        #print "Epoch: $epoch\nOld time: $old_time\nDiff: $time_diff\n----\n";
 	printf $out ("%d %.3f\n", $epoch, $filter_weight);
     }
     close $out;
