@@ -1,5 +1,5 @@
 #!/bin/sh
-CONFIG_FILE='/var/lib/getfit-marv/marv.conf'
+CONFIG_FILE='/var/lib/getfit-marv2/marv.conf'
 getfit-new-reading ${CONFIG_FILE}
 getfit-will-filter ${CONFIG_FILE}
 # getfit-graph ${CONFIG_FILE}
