@@ -1,7 +1,7 @@
 #!/bin/sh
 CONFIG_FILE='/var/lib/getfit-troy/troy.conf'
 input-weight ${CONFIG_FILE}
-getfit-will-filter ${CONFIG_FILE}
+lowpass-filter ${CONFIG_FILE}
 getfit-graph ${CONFIG_FILE}
 ./getfit-seven-days ${CONFIG_FILE} 14
 ./getfit-new ${CONFIG_FILE} 14
