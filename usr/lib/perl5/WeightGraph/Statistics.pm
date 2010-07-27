@@ -83,8 +83,14 @@ sub get_current_goal_from_config {
     my $loss_rate = $config->get('INITIAL_LOSS_RATE');
 
     my $time_diff = time - $initial_time;
+
+    print "Number of weeks: ", $time_diff / 86400 / 7, "\n";
+
     my $current_goal =
       $initial_weight - ( $time_diff / 86400 ) * ( $loss_rate / 3500 );
+
+    print "$initial_weight\t$loss_rate\t$current_goal\n";
+    
     return $current_goal;
 }
 
