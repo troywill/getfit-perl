@@ -73,15 +73,12 @@ my $FILTER_DATA_FILE = $config->get('FILTER_DATA_FILE');
 my $SEVEN_DAY_RAW_DATA_FILE = $config->get('SEVEN_DAY_RAW_DATA_FILE');
 
 ## Main ##
-my $now = time;
-my $start_time = $now - 86400 * $days;
 
-# &generate_segment_data_file( $start_time, $FILTER_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
 my ( $max_weight, $min_weight, $min_time, $max_time ) = &WeightGraph::Statistics::calculate_weight_range($FILTER_DATA_FILE);
+( $max_weight, $min_weight, $min_time, $max_time ) = &WeightGraph::Statistics::calculate_weight_range($SCALE_DATA_FILE);
 my $string = " Max/min( $max_weight, $min_weight, $min_time, $max_time )";
 my $view_width = 792-50-50;
 my $view_height = 612-50-50;
-# &Getfit::Statistics::plot_file( $SEVEN_DAY_RAW_DATA_FILE, 50, 50, $view_width, $view_height, $gfx );
 
 # Plot Goal Line
 my $TOP_GOAL_TIME = $config->get('TOP_GOAL_TIME');
@@ -89,8 +86,22 @@ my $TOP_GOAL_CALORIES = $config->get('TOP_GOAL_CALORIES');
 my $TOP_GOAL_WEIGHT = $config->get('TOP_GOAL_WEIGHT');
 
 use Getfit::Statistics;
-&Getfit::Statistics::plot_file_with_goal_line( $FILTER_DATA_FILE, 50, 50, $view_width,
-					       $view_height, $gfx, $TOP_GOAL_CALORIES,$TOP_GOAL_TIME, $TOP_GOAL_WEIGHT);
+
+$gfx->strokecolor('#0000FF');
+&WeightGraph::ParameterPlot::plot_file_with_range( '/stow/getfit-perl/var/lib/getfit-troy/plus250.dat', 50, 50, $view_width,
+					       $view_height, $gfx, $min_weight-2, $max_weight+2 );
+
+$gfx->strokecolor('#00FF00');
+&WeightGraph::ParameterPlot::plot_file_with_range( '/stow/getfit-perl/var/lib/getfit-troy/minus250.pdf', 50, 50, $view_width,
+					       $view_height, $gfx, $min_weight-2, $max_weight+2 );
+
+$gfx->strokecolor('#000000');
+&WeightGraph::ParameterPlot::plot_file_with_range( $SCALE_DATA_FILE, 50, 50, $view_width,
+					       $view_height, $gfx, $min_weight-2, $max_weight+2 );
+
+
+print "DEBUG: $SCALE_DATA_FILE <==\n";
+
 
 $gfx->textlabel(60,90,$font,$font_height,$TOP_GOAL_CALORIES);
 $gfx->textlabel(60,80,$font,$font_height,$string);

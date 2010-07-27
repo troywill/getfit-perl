@@ -1,4 +1,4 @@
-package ParameterPlot::Statistics;
+package WeightGraph::ParameterPlot;
 
 use strict;
 use warnings;
@@ -14,13 +14,13 @@ BEGIN {
     $VERSION = sprintf "%d.%03d", q$Revision: 1.1 $ =~ /(\d+)/g;
 
     @ISA    = qw(Exporter);
-    @EXPORT = qw(&elapsed_time &func2 &func4 &graph_scale);
+    @EXPORT = qw(&plot_file_with_range &graph_scale);
     %EXPORT_TAGS = ();    # eg: TAG => [ qw!name1 name2! ],
 
     # your exported package globals go here,
     # as well as any optionally exported functions
     @EXPORT_OK =
-      qw($Current_goal $max_weight $min_weight $min_time $max_time $%Hashit &func3);
+      qw( &plot_file_with_range $Current_goal $max_weight $min_weight $min_time $max_time $%Hashit &func3);
 }
 our @EXPORT_OK;
 
@@ -59,13 +59,13 @@ my $priv_func = sub {
 
 ## YOUR CODE GOES HERE
 
-sub plot_file {
-    my ( $input_file, $left, $bottom, $width, $height, $gfx ) = @_;
+sub plot_file_with_range {
+    my ( $input_file, $left, $bottom, $width, $height, $gfx, $weight_min, $weight_max ) = @_;
 
-    my ( $max_weight, $min_weight, $min_time, $max_time ) =
+    my ( $max_weight_placeholder, $min_weight_placeholder, $min_time, $max_time ) =
       &calculate_weight_range($input_file);
     my ( $xscale, $yscale ) =
-      &graph_scale( $width, $height, $min_weight, $max_weight, $min_time,
+      &graph_scale( $width, $height, $weight_min, $weight_max, $min_time,
         $max_time );
 
     my $top   = $bottom + $height;
@@ -83,13 +83,13 @@ sub plot_file {
     my ( $time, $weight ) = split();
     print "plot_file ==> ( $time, $weight )\n";
     my ( $x, $y ) =
-      &calculate_plot_point( $weight, $time, $min_weight, $min_time, $left,
+      &calculate_plot_point( $weight, $time, $weight_min, $min_time, $left,
         $bottom, $xscale, $yscale );
     $gfx->circle( $x, $y, 1 );
     while (<$IN>) {
         my ( $time, $weight ) = split;
         ( $x, $y ) =
-          &calculate_plot_point( $weight, $time, $min_weight, $min_time, $left,
+          &calculate_plot_point( $weight, $time, $weight_min, $min_time, $left,
             $bottom, $xscale, $yscale );
         $gfx->line( $x, $y );
         $gfx->circle( $x, $y, 1 );
