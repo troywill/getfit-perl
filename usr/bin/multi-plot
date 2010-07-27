@@ -95,12 +95,12 @@ $gfx->strokecolor('#000000');
 					       $view_height/2, $gfx, $min_weight-.25, $max_weight+.25 );
 # Draw Lower Left Graph
 $gfx->strokecolor('#000000');
-&WeightGraph::ParameterPlot::plot_file_with_range( $SCALE_DATA_FILE, 50, 50, $view_width/2,
+&WeightGraph::ParameterPlot::plot_file_with_range( $SCALE_DATA_FILE, 50, 50, $view_width/2-5,
 					       $view_height/2-25, $gfx, $min_weight-.25, $max_weight+.25 );
 # Draw Lower Right Graph
-$gfx->strokecolor('#000000');
-# &WeightGraph::ParameterPlot::plot_file_with_range( $SCALE_DATA_FILE, 50 + $view_width/2, 50 + $view_height/2, $view_width/2,
-# 					       $view_height/2, $gfx, $min_weight-.25, $max_weight+.25 );
+$gfx->strokecolor('#0000F0');
+&WeightGraph::ParameterPlot::plot_file_with_range( $SCALE_DATA_FILE, 50 + $view_width/2+5, 50, $view_width/2+5,
+ 					       $view_height/2-25, $gfx, $min_weight-.25, $max_weight+.25 );
 
 print "DEBUG: $SCALE_DATA_FILE <==\n";
 $gfx->textlabel(60,90,$font,$font_height,$TOP_GOAL_CALORIES);
