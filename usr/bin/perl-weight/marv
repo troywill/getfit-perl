@@ -1,0 +1,5 @@
+#!/bin/sh
+CONFIG_FILE='/var/lib/getfit-marv/marv.conf'
+input-weight ${CONFIG_FILE}
+lowpass-filter ${CONFIG_FILE}
+multi-plot ${CONFIG_FILE}
