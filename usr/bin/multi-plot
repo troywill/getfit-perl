@@ -30,6 +30,7 @@ my $START_TIME        = $config->get('START_TIME');
 my $START_WEIGHT      = $config->get('START_WEIGHT');
 my $MIN_TIME          = $START_TIME;
 my $MAX_TIME          = $config->get('GRAPH_MAX_TIME');
+my $NAME          = $config->get('NAME');
 
 #### LEGEND AND VIEWPORT VALUES ####
 my $XMAX = $config_graph->get('XMAX');
@@ -131,8 +132,6 @@ $gfx->strokecolor('#000000');
     $TOP_GOAL_WEIGHT
 );
 
-
-
 # Draw Lower Right Graph
 $gfx->strokecolor('#0000F0');
 &WeightGraph::ParameterPlot::plot_file_with_range(
@@ -157,18 +156,27 @@ $gfx->strokecolor('#0000F0');
     $TOP_GOAL_WEIGHT
 );
 
-print "DEBUG: $SCALE_DATA_FILE <==\n";
+print "DEBUG: $SCALE_DATA_FILE $NAME <==\n";
 $gfx->textlabel( 60, 90, $font, $font_height, $TOP_GOAL_CALORIES );
 $gfx->textlabel( 60, 80, $font, $font_height, $string );
 $gfx->textlabel( 60, 70, $font, $font_height, $max_weight );
 $gfx->textlabel( 60, 60, $font, $font_height, $min_weight );
 
+use Fcntl;
+use Tie::File;
+tie my @filter_file, 'Tie::File', $FILTER_DATA_FILE, mode => O_RDONLY or warn "Unable to open $FILTER_DATA_FILE filter file for input $!";
+my ( $null, $last_weight ) = split (/ /, $filter_file[-1]);
+$last_weight = sprintf("%.2f", $last_weight);
+my $current_goal = sprintf("%.2f", &get_current_goal_from_config($config_file));
+my $diff = sprintf("%.2f", $last_weight - $current_goal);
+chomp(my $date_string = `date`);
+$string = "$NAME / Unix time: " . time . " [$date_string] / Goal: $current_goal / Last weight: $last_weight/ Diff: $diff";
+
+$gfx->textlabel( 60, $YMAX-36, $font, $font_height, $string );
+
 my $outfile = $OUTFILE_DIR . '/' . $OUTFILE_BASE . '-' . time . '.pdf';
 $pdf->saveas($outfile);
 $pdf->end();
-
-my $current_goal = &get_current_goal_from_config($config_file);
-print "$current_goal <=\n";
 
 exit;
 
