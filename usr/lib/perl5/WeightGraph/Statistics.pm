@@ -74,6 +74,14 @@ sub get_current_goal {
     return $current_goal;
 }
 
+sub get_goal {
+    my ( $initial_time, $initial_weight, $loss_rate, $time ) = @_;
+    my $time_diff = $time - $initial_time;
+    my $current_goal =
+      $initial_weight - ( $time_diff / 86400 ) * ( $loss_rate / 3500 );
+    return $current_goal;
+}
+
 sub get_current_goal_from_config {
     my $config_file = shift or die "Please supply a configuration file";
     my $config = ConfigReader::Simple->new($config_file);
@@ -87,8 +95,6 @@ sub get_current_goal_from_config {
     my $current_goal =
       $initial_weight - ( $time_diff / 86400 ) * ( $loss_rate / 3500 );
 
-    print "[DEBUG] [$loss_rate] [$initial_weight]\n";
-    
     return $current_goal;
 }
 
