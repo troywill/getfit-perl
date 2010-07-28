@@ -136,7 +136,7 @@ $gfx->strokecolor('#000000');
 $gfx->strokecolor('#0000F0');
 use WeightGraph::FileSplice;
 my $start_time = time - 5 * 86400;
-&WeightGraph::FileSplice::file_splice( $start_time, $FILTER_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
+&WeightGraph::FileSplice::file_splice( $start_time, $SCALE_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
 
 ( $max_weight, $min_weight, $min_time, $max_time ) =
   &WeightGraph::Statistics::calculate_weight_range($SEVEN_DAY_RAW_DATA_FILE );
@@ -151,7 +151,6 @@ my $goal_at_end  =  &WeightGraph::Statistics::get_goal($TOP_GOAL_TIME, $TOP_GOAL
 $max_weight = $goal_at_start if ( $goal_at_start > $max_weight );
 
 print ">>> $goal_at_start, $goal_at_end <<<\n";
-
 &WeightGraph::ParameterPlot::plot_file_with_range(
     $SEVEN_DAY_RAW_DATA_FILE, 50 + $view_width / 2 + 5,
     50,
