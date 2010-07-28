@@ -157,8 +157,8 @@ print ">>> $goal_at_start, $goal_at_end <<<\n";
     $view_width / 2 - 5,
     $view_height / 2 - 25,
     $gfx,
-    $min_weight,
-    $max_weight
+    $min_weight - .1 ,
+    $max_weight + .1
 );
 
 &WeightGraph::ParameterPlot::plot_goal_line(
@@ -167,8 +167,8 @@ print ">>> $goal_at_start, $goal_at_end <<<\n";
     $view_width / 2 - 5,
     $view_height / 2 - 25,
     $gfx,
-    $min_weight,
-    $max_weight,
+    $min_weight - .1,
+    $max_weight + .1,
     $TOP_GOAL_CALORIES,
     $TOP_GOAL_TIME,
     $TOP_GOAL_WEIGHT
