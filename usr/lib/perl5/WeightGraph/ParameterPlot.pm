@@ -60,10 +60,12 @@ my $priv_func = sub {
 ## YOUR CODE GOES HERE
 
 sub plot_file_with_range {
-    my ( $input_file, $left, $bottom, $width, $height, $gfx, $weight_min, $weight_max ) = @_;
+    my ( $input_file, $left, $bottom, $width, $height, $gfx, $weight_min,
+        $weight_max )
+      = @_;
 
-    my ( $max_weight_placeholder, $min_weight_placeholder, $min_time, $max_time ) =
-      &calculate_weight_range($input_file);
+    my ( $max_weight_placeholder, $min_weight_placeholder, $min_time,
+        $max_time ) = &calculate_weight_range($input_file);
     my ( $xscale, $yscale ) =
       &graph_scale( $width, $height, $weight_min, $weight_max, $min_time,
         $max_time );
@@ -100,73 +102,38 @@ sub plot_file_with_range {
     close $IN;
 }
 
-sub plot_file_with_goal_line {
+sub plot_goal_line {
     my (
-        $input_file,        $left,          $bottom,
-        $width,             $height,        $gfx,
-        $TOP_GOAL_CALORIES, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT
+        $input_file,    $left,       $bottom,
+        $width,         $height,     $gfx,
+        $weight_min,    $weight_max, $TOP_GOAL_CALORIES,
+        $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT
     ) = @_;
 
-    my ( $max_weight, $min_weight, $min_time, $max_time ) =
-      &calculate_weight_range($input_file);
-
-    # See if goal line with add heigth to graph
-    my $rate = ( $TOP_GOAL_CALORIES / 3500 / 86400 );
-
-    # $w1, $w2: Goal weight at $min_time, $max_time
-    my $w1 =
-      &goal_weight( $min_time, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT,
-        $TOP_GOAL_CALORIES );
-    my $w2 =
-      &goal_weight( $max_time, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT,
-        $TOP_GOAL_CALORIES );
-    $min_weight = $w2 if ( $w2 < $min_weight );
-    $max_weight = $w1 if ( $w1 > $max_weight );
-
+    my ( $max_weight_placeholder, $min_weight_placeholder, $min_time,
+        $max_time ) = &calculate_weight_range($input_file);
     my ( $xscale, $yscale ) =
-      &graph_scale( $width, $height, $min_weight, $max_weight, $min_time,
+      &graph_scale( $width, $height, $weight_min, $weight_max, $min_time,
         $max_time );
 
     my $top   = $bottom + $height;
     my $right = $left + $width;
 
-    $gfx->move( $left, $bottom );
-    $gfx->line( $left,  $top );
-    $gfx->line( $right, $top );
-    $gfx->line( $right, $bottom );
-    $gfx->line( $left,  $bottom );
-    $gfx->stroke;
+    my $w1 = &goal_weight( $min_time, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES );
+    my $w2 = &goal_weight( $max_time, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES );
 
-    open( my $IN, '<', $input_file ) or die "Unable to open data file: $!";
-    $_ = <$IN>;
-    my ( $time, $weight ) = split();
-    print "plot_file ==> ( $time, $weight )\n";
-    my ( $x, $y ) =
-      &calculate_plot_point( $weight, $time, $min_weight, $min_time, $left,
-        $bottom, $xscale, $yscale );
-    $gfx->circle( $x, $y, 1 );
-    while (<$IN>) {
-        my ( $time, $weight ) = split;
-        ( $x, $y ) =
-          &calculate_plot_point( $weight, $time, $min_weight, $min_time, $left,
-            $bottom, $xscale, $yscale );
-        $gfx->line( $x, $y );
-        $gfx->circle( $x, $y, 1 );
-        $gfx->move( $x, $y );
-    }
-    $gfx->circle( $x, $y, 2 );
+    my ( $x, $y ) = &calculate_plot_point( $w1, $min_time, $weight_min, $min_time, $left, $bottom, $xscale, $yscale );
+    $gfx->move( $x,$y );
+    ( $x, $y ) = &calculate_plot_point( $w2, $max_time, $weight_min, $min_time, $left, $bottom, $xscale, $yscale );
+    $gfx->line( $x, $y );
     $gfx->stroke;
-    close $IN;
+}
 
-    my ( $px1, $py1 ) =
-      &Getfit::Statistics::calculate_plot_point( $w1, $min_time, $min_weight,
-        $min_time, 50, 50, $xscale, $yscale );
-    my ( $px2, $py2 ) =
-      &Getfit::Statistics::calculate_plot_point( $w2, $max_time, $min_weight,
-        $min_time, 50, 50, $xscale, $yscale );
-    $gfx->move( $px1, $py1 );
-    $gfx->line( $px2, $py2 );
-    $gfx->stroke;
+sub goal_weight {
+    my ( $t, $t0, $w0, $rate ) = @_;
+    $rate = $rate / 3500 / 86400;
+    my $goal_weight = $w0 - $rate * ( $t - $t0 );
+    return ($goal_weight);
 }
 
 sub calculate_plot_point {
@@ -206,6 +173,6 @@ sub calculate_weight_range {
     return ( $max_weight, $min_weight, $min_time, $max_time );
 }
 
-END { }              # module clean-up code here (global destructor)
+END { }    # module clean-up code here (global destructor)
 
-1;                   # don't forget to return a true value from the file
+1;         # don't forget to return a true value from the file
