@@ -87,7 +87,7 @@ $gfx->strokecolor('#000000');
     $FILTER_DATA_FILE, 50, 50 + $view_height / 2,
     $view_width, $view_height / 2,
     $gfx,
-    $min_weight - .25,
+    $min_weight + .25,
     $max_weight + .25
 );
 
@@ -100,14 +100,12 @@ my $TOP_GOAL_WEIGHT   = $config->get('TOP_GOAL_WEIGHT');
     $FILTER_DATA_FILE, 50, 50 + $view_height / 2,
     $view_width, $view_height / 2,
     $gfx,
-    $min_weight - .25,
+    $min_weight + .25,
     $max_weight + .25,
     $TOP_GOAL_CALORIES,
     $TOP_GOAL_TIME,
     $TOP_GOAL_WEIGHT
 );
-
-
 
 # Draw Lower Left Graph
 $gfx->strokecolor('#0000F0');
