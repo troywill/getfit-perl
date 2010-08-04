@@ -2,10 +2,12 @@
 use warnings;
 use strict;
 
+use lib '/usr/lib/perl5';
+use lib '/usr/lib/perl5/Getfit';
+
 use PDF::API3::Compat::API2;
 use PDF::API3::Compat::API2::Util;
 
-use lib '/usr/lib/perl5';
 use Getfit::ConfigReader::Simple;
 use WeightGraph::Statistics;
 use WeightGraph::ParameterPlot;
