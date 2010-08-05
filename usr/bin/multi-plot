@@ -112,7 +112,7 @@ my $TOP_GOAL_WEIGHT   = $config->get('TOP_GOAL_WEIGHT');
 # Draw Lower Left Graph
 $gfx->strokecolor('#0000F0');
 use WeightGraph::FileSplice;
-my $start_time = time - 5 * 86400;
+my $start_time = time - ( 14  * 86400 );
 &WeightGraph::FileSplice::file_splice( $start_time, $FILTER_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
 
 ( $max_weight, $min_weight, $min_time, $max_time ) =
@@ -150,7 +150,7 @@ print ">>> $goal_at_start, $goal_at_end <<<\n";
     $TOP_GOAL_TIME,
     $TOP_GOAL_WEIGHT
 );
-sleep 5;
+
 # ( $max_weight, $min_weight, $min_time, $max_time ) =
 #   &WeightGraph::Statistics::calculate_weight_range($SCALE_DATA_FILE);
 
@@ -179,7 +179,7 @@ sleep 5;
 # Draw Lower Right Graph
 $gfx->strokecolor('#0000F0');
 use WeightGraph::FileSplice;
-$start_time = time - 5 * 86400;
+$start_time = time - ( 14 * 86400 );
 &WeightGraph::FileSplice::file_splice( $start_time, $SCALE_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
 
 ( $max_weight, $min_weight, $min_time, $max_time ) =
