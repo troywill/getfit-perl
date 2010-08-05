@@ -85,31 +85,44 @@ use Getfit::Statistics;
 
 # Draw Top Graph
 $gfx->strokecolor('#000000');
-&WeightGraph::ParameterPlot::plot_file_with_range(
-    $FILTER_DATA_FILE, 50, 50 + $view_height / 2,
-    $view_width, $view_height / 2,
-    $gfx,
-    $min_weight + .25,
-    $max_weight + .25
-);
+    
+$max_time = 1295424000; # Marv's birthday
 
 # Plot Goal Line
 my $TOP_GOAL_TIME     = $config->get('TOP_GOAL_TIME');
 my $TOP_GOAL_CALORIES = $config->get('TOP_GOAL_CALORIES');
 my $TOP_GOAL_WEIGHT   = $config->get('TOP_GOAL_WEIGHT');
 
+my $end_weight = &WeightGraph::ParameterPlot::goal_weight( $max_time, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES );
+
+print "Weight on Marv's birthday: $end_weight\n";
+
 &WeightGraph::ParameterPlot::plot_goal_line(
     $FILTER_DATA_FILE, 50, 50 + $view_height / 2,
     $view_width, $view_height / 2,
     $gfx,
-    $min_weight + .25,
+    $end_weight,
     $max_weight + .25,
     $TOP_GOAL_CALORIES,
     $TOP_GOAL_TIME,
-    $TOP_GOAL_WEIGHT
+    $TOP_GOAL_WEIGHT,
+    $min_time,
+    $max_time
 );
 
+&WeightGraph::ParameterPlot::plot_file_with_range(
+    $FILTER_DATA_FILE, 50, 50 + $view_height / 2,
+    $view_width, $view_height / 2,
+    $gfx,
+    $end_weight,
+    $max_weight + .25,
+    $min_time,
+    $max_time
+);
+
+
 # Draw Lower Left Graph
+print "DEBUG: Lower Left\n";
 $gfx->strokecolor('#0000F0');
 use WeightGraph::FileSplice;
 my $start_time = time - ( 14  * 86400 );
@@ -135,7 +148,9 @@ print ">>> $goal_at_start, $goal_at_end <<<\n";
     $view_height / 2 - 25,
     $gfx,
     $min_weight - .1 ,
-    $max_weight + .1
+    $max_weight + .1,
+    $min_time,
+    $max_time
 );
 
 &WeightGraph::ParameterPlot::plot_goal_line(
@@ -148,7 +163,9 @@ print ">>> $goal_at_start, $goal_at_end <<<\n";
     $max_weight + .1,
     $TOP_GOAL_CALORIES,
     $TOP_GOAL_TIME,
-    $TOP_GOAL_WEIGHT
+    $TOP_GOAL_WEIGHT,
+    $min_time,
+    $max_time
 );
 
 # ( $max_weight, $min_weight, $min_time, $max_time ) =
@@ -202,7 +219,9 @@ print ">>> $goal_at_start, $goal_at_end <<<\n";
     $view_height / 2 - 25,
     $gfx,
     $min_weight - .1 ,
-    $max_weight + .1
+    $max_weight + .1,
+    $min_time,
+    $max_time
 );
 
 &WeightGraph::ParameterPlot::plot_goal_line(
@@ -215,7 +234,9 @@ print ">>> $goal_at_start, $goal_at_end <<<\n";
     $max_weight + .1,
     $TOP_GOAL_CALORIES,
     $TOP_GOAL_TIME,
-    $TOP_GOAL_WEIGHT
+    $TOP_GOAL_WEIGHT,
+    $min_time,
+    $max_time
 );
 
 print "DEBUG: $SCALE_DATA_FILE $NAME <==\n";

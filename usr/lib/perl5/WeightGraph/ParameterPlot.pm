@@ -61,11 +61,12 @@ my $priv_func = sub {
 
 sub plot_file_with_range {
     my ( $input_file, $left, $bottom, $width, $height, $gfx, $weight_min,
-        $weight_max )
+        $weight_max, $min_time, $max_time )
       = @_;
 
-    my ( $max_weight_placeholder, $min_weight_placeholder, $min_time,
-        $max_time ) = &calculate_weight_range($input_file);
+#    my ( $max_weight_placeholder, $min_weight_placeholder, $min_time,
+#         $max_time ) = &calculate_weight_range($input_file);
+
     my ( $xscale, $yscale ) =
       &graph_scale( $width, $height, $weight_min, $weight_max, $min_time,
         $max_time );
@@ -107,11 +108,9 @@ sub plot_goal_line {
         $input_file,    $left,       $bottom,
         $width,         $height,     $gfx,
         $weight_min,    $weight_max, $TOP_GOAL_CALORIES,
-        $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT
+        $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $min_time, $max_time
     ) = @_;
 
-    my ( $max_weight_placeholder, $min_weight_placeholder, $min_time,
-        $max_time ) = &calculate_weight_range($input_file);
     my ( $xscale, $yscale ) =
       &graph_scale( $width, $height, $weight_min, $weight_max, $min_time,
         $max_time );
@@ -127,6 +126,8 @@ sub plot_goal_line {
     ( $x, $y ) = &calculate_plot_point( $w2, $max_time, $weight_min, $min_time, $left, $bottom, $xscale, $yscale );
     $gfx->line( $x, $y );
     $gfx->stroke;
+
+    return $w2; # This is goal weight at end of 
 }
 
 sub goal_weight {
