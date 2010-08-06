@@ -90,7 +90,7 @@ sub plot_file_with_range {
         $bottom, $xscale, $yscale );
     $gfx->circle( $x, $y, 1 );
     while (<$IN>) {
-        my ( $time, $weight ) = split;
+        ( $time, $weight ) = split;
         ( $x, $y ) =
           &calculate_plot_point( $weight, $time, $weight_min, $min_time, $left,
             $bottom, $xscale, $yscale );
@@ -101,6 +101,7 @@ sub plot_file_with_range {
     $gfx->circle( $x, $y, 2 );
     $gfx->stroke;
     close $IN;
+    return ( $x, $y, $weight );
 }
 
 sub plot_goal_line {

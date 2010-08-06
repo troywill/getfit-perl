@@ -3,3 +3,5 @@ CONFIG_FILE='/var/lib/getfit-troy/troy.conf'
 input-weight ${CONFIG_FILE}
 lowpass-filter ${CONFIG_FILE}
 multi-plot ${CONFIG_FILE}
+bi-plot ${CONFIG_FILE}
+

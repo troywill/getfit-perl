@@ -128,11 +128,10 @@ $weight = sprintf("%.2f", $weight);
 $gfx->textlabel( $x-10, $y-10, $font, $font_height, $weight );
 print "DEBUG: LAST $x, $y\n";
 
-# Draw Lower Left Graph
-print "DEBUG: Lower Left\n";
-$gfx->strokecolor('#0000F0');
+# Draw Lower Graph
+
 use WeightGraph::FileSplice;
-my $start_time = time - ( 14  * 86400 );
+my $start_time = time - ( 28  * 86400 );
 &WeightGraph::FileSplice::file_splice( $start_time, $FILTER_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
 
 ( $max_weight, $min_weight, $min_time, $max_time ) =
@@ -151,7 +150,7 @@ print ">>> $goal_at_start, $goal_at_end <<<\n";
 &WeightGraph::ParameterPlot::plot_file_with_range(
     $SEVEN_DAY_RAW_DATA_FILE, 50,
     50,
-    $view_width / 2 - 5,
+    $view_width,
     $view_height / 2 - 25,
     $gfx,
     $min_weight - .1 ,
@@ -163,78 +162,7 @@ print ">>> $goal_at_start, $goal_at_end <<<\n";
 &WeightGraph::ParameterPlot::plot_goal_line(
     $SEVEN_DAY_RAW_DATA_FILE, 50,
     50,
-    $view_width / 2 - 5,
-    $view_height / 2 - 25,
-    $gfx,
-    $min_weight - .1,
-    $max_weight + .1,
-    $TOP_GOAL_CALORIES,
-    $TOP_GOAL_TIME,
-    $TOP_GOAL_WEIGHT,
-    $min_time,
-    $max_time
-);
-
-# ( $max_weight, $min_weight, $min_time, $max_time ) =
-#   &WeightGraph::Statistics::calculate_weight_range($SCALE_DATA_FILE);
-
-# $gfx->strokecolor('#000000');
-# &WeightGraph::ParameterPlot::plot_file_with_range(
-#     $SCALE_DATA_FILE, 50, 50,
-#     $view_width / 2 - 5,
-#     $view_height / 2 - 25,
-#     $gfx,
-#     $min_weight - .25,
-#     $max_weight + .25
-# );
-
-# &WeightGraph::ParameterPlot::plot_goal_line(
-#     $SCALE_DATA_FILE, 50, 50,
-#     $view_width / 2 - 5,
-#     $view_height / 2 - 25,
-#     $gfx,
-#     $min_weight - .25,
-#     $max_weight + .25,
-#     $TOP_GOAL_CALORIES,
-#     $TOP_GOAL_TIME,
-#     $TOP_GOAL_WEIGHT
-# );
-
-# Draw Lower Right Graph
-$gfx->strokecolor('#0000F0');
-use WeightGraph::FileSplice;
-$start_time = time - ( 14 * 86400 );
-&WeightGraph::FileSplice::file_splice( $start_time, $SCALE_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
-
-( $max_weight, $min_weight, $min_time, $max_time ) =
-  &WeightGraph::Statistics::calculate_weight_range($SEVEN_DAY_RAW_DATA_FILE );
-
-# my ( $initial_time, $initial_weight, $loss_rate, $time ) = @_;
-# my $GOAL_START_TIME   = $config->get('GOAL_START_TIME');
-# my $GOAL_START_WEIGHT = $config->get('GOAL_START_WEIGHT');
-
-$goal_at_start = &WeightGraph::Statistics::get_goal($TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES, $min_time);
-$goal_at_end  =  &WeightGraph::Statistics::get_goal($TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES, $max_time);
-
-$max_weight = $goal_at_start if ( $goal_at_start > $max_weight );
-
-print ">>> $goal_at_start, $goal_at_end <<<\n";
-&WeightGraph::ParameterPlot::plot_file_with_range(
-    $SEVEN_DAY_RAW_DATA_FILE, 50 + $view_width / 2 + 5,
-    50,
-    $view_width / 2 - 5,
-    $view_height / 2 - 25,
-    $gfx,
-    $min_weight - .1 ,
-    $max_weight + .1,
-    $min_time,
-    $max_time
-);
-
-&WeightGraph::ParameterPlot::plot_goal_line(
-    $SEVEN_DAY_RAW_DATA_FILE, 50 + $view_width / 2 + 5,
-    50,
-    $view_width / 2 - 5,
+    $view_width,
     $view_height / 2 - 25,
     $gfx,
     $min_weight - .1,
