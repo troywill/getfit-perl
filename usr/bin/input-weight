@@ -11,6 +11,7 @@ die "Could not read config! $ConfigReader::Simple::ERROR\n"
   unless ref $config;
 
 my $GETFIT_DATABASE = $config->get('GETFIT_DATABASE');
+print "DEBUG: $GETFIT_DATABASE\n";
 my $FLAT_FILE = $config->get('SCALE_DATA_FILE');
 my $dbh =
   DBI->connect( "dbi:SQLite:$GETFIT_DATABASE", "", "",
@@ -27,7 +28,7 @@ sub new_reading {
 	exit;
     }
     my $time = time;
-    &create_table_weight_readings($dbh, $time, $weight);     # For initial table creation only
+#    &create_table_weight_readings($dbh, $time, $weight);     # For initial table creation only
 
     $dbh->do("INSERT INTO weight_readings VALUES (NULL,$time,$weight)");
     open ( my $out, '>>', $FLAT_FILE ) or die "Unable to open $FLAT_FILE for appending: $!";
