@@ -62,7 +62,7 @@ my $TEXT_TOP  = $VIEWPORT_BOTTOM - 18;
 my $pdf  = PDF::API3::Compat::API2->new;
 my $font = $pdf->corefont('Verdana');
 my $page = $pdf->page;
-$page->mediabox( 792, 612 );    # Letter Landscape
+$page->mediabox( 612, 792 );    # Letter
 my $gfx = $page->gfx;
 
 my $FILTER_TOP              = $config->get('FILTER_TOP');
@@ -78,8 +78,8 @@ my $SEVEN_DAY_RAW_DATA_FILE = $config->get('SEVEN_DAY_RAW_DATA_FILE');
 my ( $max_weight, $min_weight, $min_time, $max_time ) =
   &WeightGraph::Statistics::calculate_weight_range($FILTER_DATA_FILE);
 my $string      = " Max/min( $max_weight, $min_weight, $min_time, $max_time )";
-my $view_width  = 792 - 50 - 50;
-my $view_height = 612 - 50 - 50;
+my $view_width  = 612 - 50 - 50;
+my $view_height = 792 - 50 - 50;
 
 use Getfit::Statistics;
 
