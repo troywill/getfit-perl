@@ -58,7 +58,6 @@ my $TEXT_LEFT = 40;
 my $TEXT_TOP  = $VIEWPORT_BOTTOM - 18;
 
 #################### End Config Section ##################
-
 my $pdf  = PDF::API3::Compat::API2->new;
 my $font = $pdf->corefont('Verdana');
 my $page = $pdf->page;
@@ -74,9 +73,9 @@ my $FILTER_DATA_FILE        = $config->get('FILTER_DATA_FILE');
 my $SEVEN_DAY_RAW_DATA_FILE = $config->get('SEVEN_DAY_RAW_DATA_FILE');
 
 ## Main ##
-
 my ( $max_weight, $min_weight, $min_time, $max_time ) =
   &WeightGraph::Statistics::calculate_weight_range($FILTER_DATA_FILE);
+
 my $string      = " Max/min( $max_weight, $min_weight, $min_time, $max_time )";
 my $view_width  = 792 - 50 - 50;
 my $view_height = 612 - 50 - 50;

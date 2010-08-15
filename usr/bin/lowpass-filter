@@ -76,6 +76,7 @@ sub run_will_filter {
 	$old_time           = $epoch;
         $old_weight_reading = $filter_weight;
 	printf $out ("%d %.3f\n", $epoch, $filter_weight);
+	printf ("lowpass: %d %.3f\n", $epoch, $filter_weight);
     }
     close $out;
 }
