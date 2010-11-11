@@ -152,10 +152,8 @@ sub graph_scale {
         $view_width, $view_height, $weight_min,
         $weight_max, $time_min,    $time_max
     ) = @_;
-    print "DEBUG L155: @_";
-    
-    print "\n\nFOO = ($view_width) /  ( $time_max - $time_min )\n\n\n";
-    print "\n\nBAR = ($view_height) / ( $weight_max - $weight_min )\n\n\n";
+
+    print "TDWL156: $time_max, $time_min\n";
     
     my $points_per_second = ($view_width) /  ( $time_max - $time_min );
     my $points_per_pound  = ($view_height) / ( $weight_max - $weight_min );

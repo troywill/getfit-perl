@@ -1,0 +1,199 @@
+#!/usr/bin/env perl
+use warnings;
+use strict;
+
+use lib '/usr/lib/perl5';
+use lib '/usr/lib/perl5/Getfit';
+
+use PDF::API3::Compat::API2;
+use PDF::API3::Compat::API2::Util;
+
+use Getfit::ConfigReader::Simple;
+use WeightGraph::Statistics;
+use WeightGraph::ParameterPlot;
+
+my $config_file = $ARGV[0] or die "# e.g. /var/lib/getfit-troy/troy.conf: $!";
+my $graph_constants = '/var/lib/getfit-perl/graph_constants.conf';
+
+#################### Begin Config Section ##################
+my $config       = ConfigReader::Simple->new($config_file);
+my $config_graph = ConfigReader::Simple->new($graph_constants);
+my $initial_time = $config->get('START_TIME');
+my $OUTFILE_DIR  = $config->get('OUTFILE_DIR');
+my $OUTFILE_BASE = $config->get('OUTFILE_BASE');
+########### Graph Constants
+my $LEGEND_LEFT       = $config_graph->get('LEGEND_LEFT');
+my $GOAL_START_TIME   = $config->get('GOAL_START_TIME');
+my $GOAL_START_WEIGHT = $config->get('GOAL_START_WEIGHT');
+my $SCALE_DATA_FILE   = $config->get('SCALE_DATA_FILE');
+my $MIN_WEIGHT        = $config->get('GRAPH_MIN_WEIGHT');
+my $MAX_WEIGHT        = $config->get('GRAPH_MAX_WEIGHT');
+my $START_TIME        = $config->get('START_TIME');
+my $START_WEIGHT      = $config->get('START_WEIGHT');
+my $MIN_TIME          = $START_TIME;
+my $MAX_TIME          = $config->get('GRAPH_MAX_TIME');
+my $NAME          = $config->get('NAME');
+
+#### LEGEND AND VIEWPORT VALUES ####
+my $XMAX = $config_graph->get('XMAX');
+my $YMAX = $config_graph->get('YMAX');
+
+my $SPACE_LEFT   = $config_graph->get('SPACE_LEFT');
+my $SPACE_RIGHT  = $config_graph->get('SPACE_RIGHT');
+my $SPACE_TOP    = $config_graph->get('SPACE_TOP');
+my $SPACE_BOTTOM = $config_graph->get('SPACE_BOTTOM');
+
+my $VIEWPORT_LEFT   = $SPACE_LEFT;
+my $VIEWPORT_RIGHT  = $XMAX - $SPACE_RIGHT;
+my $VIEWPORT_TOP    = $YMAX - $SPACE_TOP;
+my $VIEWPORT_BOTTOM = $SPACE_BOTTOM;
+
+my $font_height = 8;
+my $spacer      = 2;
+
+# Circle Constants
+my $RADIUS = .0;
+
+my $TEXT_LEFT = 40;
+my $TEXT_TOP  = $VIEWPORT_BOTTOM - 18;
+
+#################### End Config Section ##################
+my $pdf  = PDF::API3::Compat::API2->new;
+my $font = $pdf->corefont('Verdana');
+my $page = $pdf->page;
+$page->mediabox( 792, 612 );    # Letter Landscape
+my $gfx = $page->gfx;
+
+my $FILTER_TOP              = $config->get('FILTER_TOP');
+my $FILTER_BOTTOM           = $config->get('FILTER_BOTTOM');
+my $FILTER_GRAPH_MAX_WEIGHT = $config->get('FILTER_GRAPH_MAX_WEIGHT');
+my $FILTER_GRAPH_MIN_WEIGHT = $config->get('FILTER_GRAPH_MIN_WEIGHT');
+
+my $FILTER_DATA_FILE        = $config->get('FILTER_DATA_FILE');
+my $SEVEN_DAY_RAW_DATA_FILE = $config->get('SEVEN_DAY_RAW_DATA_FILE');
+
+## Main ##
+my ( $max_weight, $min_weight, $min_time, $max_time ) =
+  &WeightGraph::Statistics::calculate_weight_range($FILTER_DATA_FILE);
+
+my $string      = " Max/min( $max_weight, $min_weight, $min_time, $max_time )";
+my $view_width  = 792 - 50 - 50;
+my $view_height = 612 - 50 - 50;
+
+use Getfit::Statistics;
+
+# Draw Top Graph
+$gfx->strokecolor('#000000');
+    
+$max_time = 1295424000; # Marv's birthday, Jan 19, 2011
+$max_time = 1326960000; # Marv's birthday, Jan 19, 2012
+my $max_time = $config->get('END_EPOCH');
+
+# Plot Goal Line
+my $TOP_GOAL_TIME     = $config->get('TOP_GOAL_TIME');
+my $TOP_GOAL_CALORIES = $config->get('TOP_GOAL_CALORIES');
+my $TOP_GOAL_WEIGHT   = $config->get('TOP_GOAL_WEIGHT');
+
+my $end_weight = &WeightGraph::ParameterPlot::goal_weight( $max_time, $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES );
+$end_weight = sprintf("%.2f", $end_weight);
+
+print "Weight on Marv's birthday: $end_weight\n";
+
+&WeightGraph::ParameterPlot::plot_goal_line(
+    $FILTER_DATA_FILE, 50, 50 + $view_height / 2,
+    $view_width, $view_height / 2,
+    $gfx,
+    $end_weight,
+    $max_weight + .25,
+    $TOP_GOAL_CALORIES,
+    $TOP_GOAL_TIME,
+    $TOP_GOAL_WEIGHT,
+    $min_time,
+    $max_time
+);
+
+my ( $x, $y, $weight ) = &WeightGraph::ParameterPlot::plot_file_with_range(
+    $FILTER_DATA_FILE, 50, 50 + $view_height / 2,
+    $view_width, $view_height / 2,
+    $gfx,
+    $end_weight,
+    $max_weight + .25,
+    $min_time,
+    $max_time
+);
+
+$gfx->textlabel( 743, 305, $font, $font_height, $end_weight );
+$weight = sprintf("%.2f", $weight);
+$gfx->textlabel( $x-10, $y-10, $font, $font_height, $weight );
+print "DEBUG: LAST $x, $y\n";
+
+# Draw Lower Graph
+sub draw_lower_graph {
+    use WeightGraph::FileSplice;
+    my $start_time = time - ( 28  * 86400 );
+    &WeightGraph::FileSplice::file_splice( $start_time, $FILTER_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
+
+    ( $max_weight, $min_weight, $min_time, $max_time ) =
+	&WeightGraph::Statistics::calculate_weight_range($SEVEN_DAY_RAW_DATA_FILE );
+
+# my ( $initial_time, $initial_weight, $loss_rate, $time ) = @_;
+# my $GOAL_START_TIME   = $config->get('GOAL_START_TIME');
+# my $GOAL_START_WEIGHT = $config->get('GOAL_START_WEIGHT');
+
+    my $goal_at_start = &WeightGraph::Statistics::get_goal($TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES, $min_time);
+    my $goal_at_end  =  &WeightGraph::Statistics::get_goal($TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES, $max_time);
+
+    $max_weight = $goal_at_start if ( $goal_at_start > $max_weight );
+
+    print ">>> $goal_at_start, $goal_at_end <<<\n";
+    &WeightGraph::ParameterPlot::plot_file_with_range(
+	$SEVEN_DAY_RAW_DATA_FILE, 50,
+	50,
+	$view_width,
+	$view_height / 2 - 25,
+	$gfx,
+	$min_weight - .1 ,
+	$max_weight + .1,
+	$min_time,
+	$max_time
+	);
+    
+    &WeightGraph::ParameterPlot::plot_goal_line(
+	$SEVEN_DAY_RAW_DATA_FILE, 50,
+	50,
+	$view_width,
+	$view_height / 2 - 25,
+	$gfx,
+	$min_weight - .1,
+	$max_weight + .1,
+	$TOP_GOAL_CALORIES,
+	$TOP_GOAL_TIME,
+	$TOP_GOAL_WEIGHT,
+	$min_time,
+	$max_time
+	);
+}
+
+print "DEBUG: $SCALE_DATA_FILE $NAME <==\n";
+$gfx->textlabel( 60, 90, $font, $font_height, $TOP_GOAL_CALORIES );
+$gfx->textlabel( 60, 80, $font, $font_height, $string );
+$gfx->textlabel( 60, 70, $font, $font_height, $max_weight );
+$gfx->textlabel( 60, 60, $font, $font_height, $min_weight );
+
+use Fcntl;
+use Tie::File;
+tie my @filter_file, 'Tie::File', $FILTER_DATA_FILE, mode => O_RDONLY or warn "Unable to open $FILTER_DATA_FILE filter file for input $!";
+my ( $null, $last_weight ) = split (/ /, $filter_file[-1]);
+$last_weight = sprintf("%.2f", $last_weight);
+my $current_goal = sprintf("%.2f", &get_current_goal_from_config($config_file));
+my $diff = sprintf("%.2f", $last_weight - $current_goal);
+chomp(my $date_string = `date`);
+$string = "$NAME / Unix time: " . time . " [$date_string] / Goal: $current_goal / Last weight: $last_weight/ Diff: $diff";
+
+$gfx->textlabel( 60, $YMAX-36, $font, $font_height, $string );
+
+my $outfile = $OUTFILE_DIR . '/' . $OUTFILE_BASE . '-' . time . '.pdf';
+$pdf->saveas($outfile);
+$pdf->end();
+
+exit;
