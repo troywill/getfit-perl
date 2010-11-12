@@ -64,9 +64,6 @@ sub plot_file_with_range {
         $weight_max, $min_time, $max_time )
       = @_;
 
-#    my ( $max_weight_placeholder, $min_weight_placeholder, $min_time,
-#         $max_time ) = &calculate_weight_range($input_file);
-
     my ( $xscale, $yscale ) =
       &graph_scale( $width, $height, $weight_min, $weight_max, $min_time,
         $max_time );
@@ -84,7 +81,6 @@ sub plot_file_with_range {
     open( my $IN, '<', $input_file ) or die "Unable to open data file: $!";
     $_ = <$IN>;
     my ( $time, $weight ) = split();
-    print "plot_file ==> ( $time, $weight )\n";
     my ( $x, $y ) =
       &calculate_plot_point( $weight, $time, $weight_min, $min_time, $left,
         $bottom, $xscale, $yscale );
@@ -112,6 +108,9 @@ sub plot_goal_line {
         $TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $min_time, $max_time
     ) = @_;
 
+    $gfx->linedash(2,1);
+    $gfx->strokecolor('#0000FF');
+
     my ( $xscale, $yscale ) =
       &graph_scale( $width, $height, $weight_min, $weight_max, $min_time,
         $max_time );
@@ -128,6 +127,8 @@ sub plot_goal_line {
     $gfx->line( $x, $y );
     $gfx->stroke;
 
+    $gfx->linedash(1,0); # Reset line to solid
+    $gfx->strokecolor('#000000'); # Reset line to black
     return $w2; # This is goal weight at end of 
 }
 
@@ -153,8 +154,6 @@ sub graph_scale {
         $weight_max, $time_min,    $time_max
     ) = @_;
 
-    print "TDWL156: $time_max, $time_min\n";
-    
     my $points_per_second = ($view_width) /  ( $time_max - $time_min );
     my $points_per_pound  = ($view_height) / ( $weight_max - $weight_min );
     return ( $points_per_second, $points_per_pound );

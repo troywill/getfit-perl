@@ -32,7 +32,7 @@ my $START_TIME        = $config->get('START_TIME');
 my $START_WEIGHT      = $config->get('START_WEIGHT');
 my $MIN_TIME          = $START_TIME;
 my $MAX_TIME          = $config->get('GRAPH_MAX_TIME');
-my $NAME          = $config->get('NAME');
+my $NAME              = $config->get('NAME');
 
 #### LEGEND AND VIEWPORT VALUES ####
 my $XMAX = $config_graph->get('XMAX');
@@ -122,54 +122,6 @@ $gfx->textlabel( 743, 305, $font, $font_height, $end_weight );
 $weight = sprintf("%.2f", $weight);
 $gfx->textlabel( $x-10, $y-10, $font, $font_height, $weight );
 
-# Draw Lower Graph
-sub draw_lower_graph {
-    use WeightGraph::FileSplice;
-    my $start_time = time - ( 28  * 86400 );
-    &WeightGraph::FileSplice::file_splice( $start_time, $FILTER_DATA_FILE, $SEVEN_DAY_RAW_DATA_FILE );
-
-    ( $max_weight, $min_weight, $min_time, $max_time ) =
-	&WeightGraph::Statistics::calculate_weight_range($SEVEN_DAY_RAW_DATA_FILE );
-
-# my ( $initial_time, $initial_weight, $loss_rate, $time ) = @_;
-# my $GOAL_START_TIME   = $config->get('GOAL_START_TIME');
-# my $GOAL_START_WEIGHT = $config->get('GOAL_START_WEIGHT');
-
-    my $goal_at_start = &WeightGraph::Statistics::get_goal($TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES, $min_time);
-    my $goal_at_end  =  &WeightGraph::Statistics::get_goal($TOP_GOAL_TIME, $TOP_GOAL_WEIGHT, $TOP_GOAL_CALORIES, $max_time);
-
-    $max_weight = $goal_at_start if ( $goal_at_start > $max_weight );
-
-    print ">>> $goal_at_start, $goal_at_end <<<\n";
-    &WeightGraph::ParameterPlot::plot_file_with_range(
-	$SEVEN_DAY_RAW_DATA_FILE, 50,
-	50,
-	$view_width,
-	$view_height / 2 - 25,
-	$gfx,
-	$min_weight - .1 ,
-	$max_weight + .1,
-	$min_time,
-	$max_time
-	);
-    
-    &WeightGraph::ParameterPlot::plot_goal_line(
-	$SEVEN_DAY_RAW_DATA_FILE, 50,
-	50,
-	$view_width,
-	$view_height / 2 - 25,
-	$gfx,
-	$min_weight - .1,
-	$max_weight + .1,
-	$TOP_GOAL_CALORIES,
-	$TOP_GOAL_TIME,
-	$TOP_GOAL_WEIGHT,
-	$min_time,
-	$max_time
-	);
-}
-
-print "DEBUG: $SCALE_DATA_FILE $NAME <==\n";
 $gfx->textlabel( 60, 90, $font, $font_height, $TOP_GOAL_CALORIES );
 $gfx->textlabel( 60, 80, $font, $font_height, $string );
 $gfx->textlabel( 60, 70, $font, $font_height, $max_weight );
