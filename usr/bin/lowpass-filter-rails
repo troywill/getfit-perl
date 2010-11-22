@@ -1,0 +1,82 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use DBI;
+use lib '/usr/lib/perl5/Getfit';
+use lib '/usr/lib/perl5';
+use Text::CSV;
+use ConfigReader::Simple;
+
+my $config_file = shift || die "Please supply config file, e.g. /var/lib/getfit-troy/troy.conf";
+my $config = ConfigReader::Simple->new($config_file);
+die "Could not read config! $ConfigReader::Simple::ERROR\n"
+    unless ref $config;
+my $GETFIT_DATABASE = $config->get('GETFIT_DATABASE');
+my $FILTER_DATA_FILE = $config->get('FILTER_DATA_FILE');
+my $CALORIES_PER_DAY = $config->get('CALORIES_PER_DAY');
+my $MAX_GAIN_RATE = $config->get('MAX_GAIN_RATE');
+
+my $max_gain_rate  = ( ($MAX_GAIN_RATE/3500) / 24 / 60 / 60 );              #lbs per second
+my $max_loss_rate  = ( ($CALORIES_PER_DAY/3500) / 24 / 60 / 60 );              #lbs per second
+
+my $dbh =
+  DBI->connect( "dbi:SQLite:$GETFIT_DATABASE", "", "",
+		{ RaiseError => 1, AutoCommit => 1 } );
+
+&run_will_filter($dbh);
+# &print_weight_table($dbh);
+
+sub print_weight_table {
+    my $dbh = shift;
+    my $weight_readings =
+	$dbh->selectall_arrayref("SELECT * FROM weight_readings ORDER BY id");
+    foreach my $row (@$weight_readings) {
+        my ( $id, $epoch, $weight_reading ) = @$row;
+#        print "\t$id\t$epoch\t$weight_reading\n";
+    }
+}
+
+sub get_initial_value {
+    my $dbh = shift;
+    my ( $id, $epoch, $weight_reading ) = ( 0, 0, 0 );
+    my $weight_readings =
+	$dbh->selectall_arrayref("SELECT * FROM weight_readings ORDER BY id LIMIT 1");
+    foreach my $row (@$weight_readings) {
+        ( $id, $epoch, $weight_reading ) = @$row;
+    }
+    return ($id, $epoch, $weight_reading);
+}
+
+sub run_will_filter {
+    my $dbh                = shift;
+    my $time_diff          = 0;
+    my ( $id, $epoch, $weight_reading ) = &get_initial_value($dbh);
+    my $old_time           = $epoch;
+    my $old_weight_reading = $weight_reading;
+    my $filter_weight      = $weight_reading;
+    my $min_weight         = $weight_reading;
+    my $max_weight         = $weight_reading;
+
+    open( my $out, '>', $FILTER_DATA_FILE ) or die "Unable to open filter data file for output: $!";
+
+    my $weight_readings =
+	$dbh->selectall_arrayref("SELECT * FROM weight_readings ORDER BY id");
+    foreach my $row (@$weight_readings) {
+        ( my $id, $epoch, my $weight_reading ) = @$row;
+        $time_diff  = ( $epoch - $old_time );
+        $max_weight = $old_weight_reading + $max_gain_rate * $time_diff;
+        $min_weight = $old_weight_reading - $max_loss_rate * $time_diff;
+        if ( $weight_reading > $max_weight ) {
+	  $filter_weight = $max_weight;
+	} elsif ( $weight_reading < $min_weight ) {
+	  $filter_weight = $min_weight;
+        } else {
+	  $filter_weight = $weight_reading;
+        }
+	$old_time           = $epoch;
+        $old_weight_reading = $filter_weight;
+	printf $out ("%d %.3f\n", $epoch, $filter_weight);
+	printf ("lowpass: %d %.3f\n", $epoch, $filter_weight);
+    }
+    close $out;
+}
