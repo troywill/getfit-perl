@@ -67,6 +67,6 @@ my $z=$svg->tag('g',
 # print $svg->xmlify(-namespace=>'svg');
 
 # or, explicitly use svg namespace and generate an in-line docunent
-open ( my $out, '>', '/stow/marvredshaw/srv/http/marv.svg');
-
+# open ( my $out, '>', '/stow/marvredshaw/srv/http/marv.svg');
+open ( my $out, '>', '/tmp/marv.svg');
 print $out $svg->xmlify(-namespace => "svg",-pubid => "-//W3C//DTD SVG 1.0//EN", -inline   => 1 );
