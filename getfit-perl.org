@@ -1,0 +1,78 @@
+* getfit.pl
+#+begin_src perl :tangle bin/getfit.pl :shebang #!/usr/bin/env perl :noweb yes
+  <<pragma-chunk>>
+  <<read-config-chunk>>
+  <<get-options-chunk>>
+
+  my $initial_time = 1358716005;
+  my $calories_per_day = 240;
+  my $seconds_per_day = 86400;
+  my $calories_per_pound = 3500;
+  my $weight_loss_rate = $calories_per_day / $seconds_per_day / $calories_per_pound;
+  my $delta_time = time - $initial_time;
+  my $goal = 178.2 - $weight_loss_rate * $delta_time;
+  print "Goal: $goal\n";
+
+#+end_src
+  
+
+* getfit.conf
+#+BEGIN_SRC fundamental :tangle getfit.conf :padline no
+  # General settings
+  STORAGE_DIRECTORY = /var/weight
+  # User 1
+  USER1_NAME = troy
+  USER1_INITIAL_WEIGHT = 178.2
+  USER1_INITIAL_TIME = 1358716005;
+  USER1_WEIGHT_LOSS_GOAL = 2000;
+  USER1_WEIGHT_LOSS_TEXT = "240 cals per day until <= 178"
+#+end_src
+* Chunks
+** pragma-chunk
+#+NAME: pragma-chunk
+#+BEGIN_SRC perl
+use warnings;
+use strict;
+use LWP::Simple;
+use Getopt::Long;
+use FindBin qw($Bin);
+use File::Basename;
+use lib "$Bin/../lib";
+#+END_SRC
+** read-config-chunk
+#+NAME: read-config-chunk
+#+BEGIN_SRC perl
+### BEGIN CONFIGURATION SECTION
+my $config_file = $ENV{HOME} . '/.getfit.conf';
+my $BASE_DIR = "/var/getfit";
+
+my %User_Preferences;
+open(CONFIG, "<", $config_file) or die "Unable to read config file $config_file: $!";
+while (<CONFIG>) {
+    chomp;                  # no newline
+    s/#.*//;                # no comments
+    s/^\s+//;               # no leading white
+    s/\s+$//;               # no trailing white
+    next unless length;     # anything left?
+    my ($var, $value) = split(/\s*=\s*/, $_, 2);
+    $User_Preferences{$var} = $value;
+}
+### END CONFIGURATION SECTION
+#+END_SRC
+** get-options-chunk
+#+NAME: get-options-chunk
+#+BEGIN_SRC perl
+  ### BEGIN GET OPTIONS SECTION
+  my $interval = 1;
+  my $duration = 86400;
+  my $camera_name = 'CAM2';
+  my $hostname = '192.168.1.20';
+  GetOptions( "interval=i" => \$interval,
+              "duration=i" => \$duration,
+              "camera=s" => \$camera_name,
+              "hostname=s" => \$hostname);
+  my $PIDFILE = "$BASE_DIR/run/pid.asf.$camera_name";
+  my $UPLOADFILE = "$BASE_DIR/log/videofiles";
+  my $RSYNCFILE = "$BASE_DIR/log/rsyncfile";
+  ### END GET OPTIONS SECTION
+#+END_SRC   
